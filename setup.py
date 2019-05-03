@@ -1,4 +1,3 @@
-#from distutils.core import setup
 from setuptools import setup, find_packages
 import sys
 import platform
@@ -9,9 +8,8 @@ if  platform.system() == 'Darwin':
 
 install_requires = ["jpype1"]
 
-#if sys.argv[1] == 'develop':
-#    install_requires.append("deepdiff<3.3.0")
-#    install_requires.append("pytest")
+if sys.argv[1] == 'develop':
+    install_requires.append("pytest")
 
 # version is modified by misc/setversion.py. See Makefile.
 setup(

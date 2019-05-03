@@ -16,3 +16,4 @@ def test_doGetDataSet():
 	apds.setDataSetURI('http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0')
 	apds.doGetDataSet()
 	vv = apds.values()
+	assert vv[0] == 3.4716999530792236
