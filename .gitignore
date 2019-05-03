@@ -1,4 +1,4 @@
-misc/.pipirc
+.pipirc
 hapi-data/
 *.pyc
 tmp/

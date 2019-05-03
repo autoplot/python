@@ -1,27 +1,41 @@
+# Make a release
+#  git commit 
+#  make test PYTHON=python2.7
+#  make test PYTHON=python3.6
+#  make version-tag VERSION=VERSION_IN_SETUP.PY
+#  make release VERSION=VERSION_IN_SETUP.PY
+
 #PYTHONV=2.7
 PYTHONV=3.6
 
 PYTHON=python$(PYTHONV)
 
 URL=https://upload.pypi.org/
-REP=pypi
 
 VERSION=0.0.1
 SHELL:= /bin/bash
 
-package:
+version-tag:
+	git commit -a -m "Last $(VERSION) commit"
+	git push
+	git tag -a v$(VERSION) -m "Version "$(VERSION)
+	git push --tags
+
+pacakge:
+	make dist/hapiclient-$(VERSION).tar.gz
+
+dist/autoplot-$(VERSION).tar.gz:
 	python setup.py sdist
 
-release:
+release: dist/autoplot-$(VERSION).tar.gz
+	pip install twine
 	twine upload \
-		-r $(REP) dist/hapiclient-$(VERSION).tar.gz \
-		--config-file misc/.pypirc \
+		-r pypi dist/autoplot-$(VERSION).tar.gz \
 		&& \
 	echo Uploaded to $(subst upload.,,$(URL))/project/autoplot/
 
 test:
-	#- conda create -n $(PYTHON) python=$(PYTHONV)
-	# you need to run the above command manually.
+	- conda create -n $(PYTHON) python=$(PYTHONV)
 	source activate $(PYTHON); $(PYTHON) setup.py develop
 	source activate $(PYTHON); $(PYTHON) -m pytest autoplot/test/test_autoplot.py
 
