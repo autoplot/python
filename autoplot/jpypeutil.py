@@ -11,16 +11,16 @@ def javaaddpath( url, jdwpPort=-1 ):
 
     try:
         # For Python 3.0 and later
-        from request import urlopen
+        from urllib.request import urlopen
     except ImportError:
         # Fall back to Python 2's urllib2
         from urllib2 import urlopen
 
     file_name = url.split('/')[-1]
     u = urlopen(url)
-    meta = u.info()
-    file_size = int(meta.getheaders("Content-Length")[0])
-    cacheFile = tempfile.gettempdir()+file_name
+    i = u.info()
+    file_size = int(i.get("Content-Length"))
+    cacheFile = tempfile.gettempdir()+os.sep+file_name
     useCache = False
     if os.path.exists( cacheFile ):
        cacheFileSize= os.path.getsize( cacheFile )
@@ -48,7 +48,8 @@ def javaaddpath( url, jdwpPort=-1 ):
           f.write(buffer)
           status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
           status = status + chr(8)*(len(status)+1)
-          print '\r' + status ,
+          status = '\r' + status
+          print( status, end='' )
        print('')
 
        f.close()
