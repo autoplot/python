@@ -1,0 +1,14 @@
+clean:
+	- python setup.py --uninstall
+	- find . -name __pycache__ | xargs rm -rf {}
+	- find . -name *.pyc | xargs rm -rf {}
+	- find . -name *.DS_Store | xargs rm -rf {}
+	- find . -type d -name __pycache__ | xargs rm -rf {}
+	- find . -type d -name ".egg-info" | xargs rm -rf {}
+	- find . -name *.pyc | xargs rm -rf {}
+	- rm -f *~
+	- rm -f \#*\#
+	- rm -rf env
+	- rm -rf dist
+	- rm -f MANIFEST
+	- rm -rf .pytest_cache/

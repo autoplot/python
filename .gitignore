@@ -1,0 +1,15 @@
+misc/.pipirc
+hapi-data/
+*.pyc
+tmp/
+misc/tmp/
+*~
+.DS_Store
+hapiclient.egg-info/
+dist/
+MANIFEST
+README.txt
+.pytest_cache/
+.ipynb_checkpoints/
+.vscode/
+.idea
