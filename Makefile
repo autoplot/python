@@ -3,6 +3,22 @@ PYTHONV=2.7
 
 PYTHON=python$(PYTHONV)
 
+URL=https://upload.pypi.org/
+REP=pypi
+
+VERSION=0.0.1
+SHELL:= /bin/bash
+
+package:
+	python setup.py sdist
+
+release:
+	twine upload \
+		-r $(REP) dist/hapiclient-$(VERSION).tar.gz \
+		--config-file misc/.pypirc \
+		&& \
+	echo Uploaded to $(subst upload.,,$(URL))/project/autoplot/
+
 test:
 	- conda create -n $(PYTHON) python=$(PYTHONV) > /dev/null 2>&1
 	source activate $(PYTHON); $(PYTHON) setup.py develop
