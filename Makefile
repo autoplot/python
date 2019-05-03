@@ -1,10 +1,11 @@
-PYTHONV=2.7
-#PYTHONV=3.6
+#PYTHONV=2.7
+PYTHONV=3.6
 
 PYTHON=python$(PYTHONV)
 
 test:
-	- conda create -n $(PYTHON) python=$(PYTHONV) > /dev/null 2>&1
+	#- conda create -n $(PYTHON) python=$(PYTHONV)
+	# you need to run the above command manually.
 	source activate $(PYTHON); $(PYTHON) setup.py develop
 	source activate $(PYTHON); $(PYTHON) -m pytest autoplot/test/test_autoplot.py
 
