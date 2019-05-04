@@ -113,3 +113,10 @@ sc= org.autoplot.ScriptContext
 sc.formatDataSet( ds, '/tmp/cdffile.cdf' )
 
 """
+
+def applot( X, Y=None, Z=None ):
+   'plot Python arrays or ndarrays in Autoplot'
+   ds= ndarray2qdataset( X, Y )
+   org= jpype.JPackage('org')
+   sc= org.autoplot.ScriptContext()
+   sc.plot( ds )

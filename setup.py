@@ -1,4 +1,9 @@
-from setuptools import setup, find_packages
+try:
+    from setuptools import setup, find_packages
+except ImportError:
+    print 'try pip install setuptools --user'
+    
+
 import sys
 import platform
 
@@ -14,13 +19,14 @@ if sys.argv[1] == 'develop':
 # version is modified by misc/setversion.py. See Makefile.
 setup(
     name='autoplot',
-    version='0.0.1',
+    version='0.0.2',
     author='Jeremy Faden',
     author_email='faden@cottagesystems.com',
-    packages=find_packages(),
+    packages=find_packages(), 
     url='http://pypi.python.org/pypi/autoplot/',
     license='LICENSE.txt',
     description='Interface to Autoplot library',
     long_description=open('README.rst').read(),
     install_requires=install_requires
 )
+
