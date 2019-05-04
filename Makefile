@@ -21,7 +21,7 @@ version-tag:
 	git tag -a v$(VERSION) -m "Version "$(VERSION)
 	git push --tags
 
-pacakge:
+package:
 	make dist/hapiclient-$(VERSION).tar.gz
 
 dist/autoplot-$(VERSION).tar.gz:
