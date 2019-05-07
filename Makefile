@@ -12,8 +12,10 @@ PYTHON=python$(PYTHONV)
 
 URL=https://upload.pypi.org/
 
-VERSION=0.0.2
+VERSION=0.0.3
 SHELL:= /bin/bash
+
+version-tag: version-tag-commit version-tag-push
 
 version-tag-commit:
 	git commit -a -m "Last $(VERSION) commit"
@@ -23,7 +25,6 @@ version-tag-push:
 	git tag -a v$(VERSION) -m "Version "$(VERSION)
 	git push --tags
 
-version-tag: version-tag-commit version-tag-push
 
 package:
 	make dist/hapiclient-$(VERSION).tar.gz
