@@ -6,7 +6,7 @@ apds = org.autoplot.idlsupport.APDataSet()
 apds.setDataSetURI('http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0')
 apds.doGetDataSet()
 
-print apds.toString()
+print( apds.toString() )
 
 vv= apds.values()
 
