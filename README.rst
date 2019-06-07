@@ -1,8 +1,6 @@
 Autoplot/Python Interface Tools
 -------------------------------
 
-Under development. 
-
 Install using `pip install autoplot`
 
 .. code:: python
