@@ -1,19 +1,18 @@
-# Make a release
-#  git commit 
-#  make test PYTHON=python2.7
-#  make test PYTHON=python3.6
-#  make version-tag VERSION=VERSION_IN_SETUP.PY
-#  make release VERSION=VERSION_IN_SETUP.PY
+# To make a release
+#  Edit version in setup.py and modify make commands below
+#  accordingly. Then
+#   git commit
+#   make test PYTHON=python2.7
+#   make test PYTHON=python3.6
+#   make version-tag VERSION=0.0.3
+#   make release VERSION=0.0.3
 
+SHELL:= /bin/bash
+VERSION=0.0.0
 #PYTHONV=2.7
 PYTHONV=3.6
-
 PYTHON=python$(PYTHONV)
-
 URL=https://upload.pypi.org/
-
-VERSION=0.0.3
-SHELL:= /bin/bash
 
 version-tag: version-tag-commit version-tag-push
 
@@ -24,7 +23,6 @@ version-tag-commit:
 version-tag-push:
 	git tag -a v$(VERSION) -m "Version "$(VERSION)
 	git push --tags
-
 
 package:
 	make dist/hapiclient-$(VERSION).tar.gz

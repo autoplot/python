@@ -7,7 +7,7 @@ except ImportError:
 import sys
 import platform
 
-if  platform.system() == 'Darwin':
+if platform.system() == 'Darwin':
     import os
     os.system("export MACOSX_DEPLOYMENT_TARGET=10.10")
 
