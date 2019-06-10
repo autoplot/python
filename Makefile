@@ -1,15 +1,13 @@
-# To make a release
-#  Edit version in setup.py and modify make commands below
-#  accordingly. Then
+# To make a release, edit `version` keyword in setup.py and
+# modify make commands below accordingly. Then
 #   git commit
 #   make test PYTHON=python2.7
 #   make test PYTHON=python3.6
-#   make version-tag VERSION=0.0.3
-#   make release VERSION=0.0.3
+#   make version-tag VERSION=0.0.2
+#   make release VERSION=0.0.2
 
 SHELL:= /bin/bash
 VERSION=0.0.0
-#PYTHONV=2.7
 PYTHONV=3.6
 PYTHON=python$(PYTHONV)
 URL=https://upload.pypi.org/
@@ -37,8 +35,9 @@ release: dist/autoplot-$(VERSION).tar.gz
 		&& \
 	echo Uploaded to $(subst upload.,,$(URL))/project/autoplot/
 
+# TODO: Use tox
 test:
-	- conda create -n $(PYTHON) python=$(PYTHONV)
+	- conda create -n $(PYTHON) python=$(PYTHONV) 2>/dev/null
 	source activate $(PYTHON); $(PYTHON) setup.py develop
 	source activate $(PYTHON); $(PYTHON) -m pytest autoplot/test/test_autoplot.py
 

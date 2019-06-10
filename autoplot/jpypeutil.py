@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 def javaaddpath( url, jdwpPort=-1 ):
     '''Start up JVM, import JAR at URL, and import the path into the Python namespace.
 
@@ -9,6 +11,7 @@ def javaaddpath( url, jdwpPort=-1 ):
     import jpype
     import tempfile
 
+    # TODO: Use requests package.
     try:
         # For Python 3.0 and later
         from urllib.request import urlopen
@@ -49,7 +52,7 @@ def javaaddpath( url, jdwpPort=-1 ):
           status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
           status = status + chr(8)*(len(status)+1)
           status = '\r' + status
-          print( status, end='' )
+          print( status, end=' ' )
        print('')
 
        f.close()

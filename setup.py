@@ -1,8 +1,7 @@
 try:
     from setuptools import setup, find_packages
 except ImportError:
-    print 'try pip install setuptools --user'
-    
+    print('setuptools not available. Try:\n\tpip install setuptools --user')
 
 import sys
 import platform
@@ -16,16 +15,15 @@ install_requires = ["jpype1"]
 if sys.argv[1] == 'develop':
     install_requires.append("pytest")
 
-# version is modified by misc/setversion.py. See Makefile.
 setup(
     name='autoplot',
     version='0.0.2',
     author='Jeremy Faden',
     author_email='faden@cottagesystems.com',
     packages=find_packages(), 
-    url='http://pypi.python.org/pypi/autoplot/',
+    url='http://pypi.python.org/pypi/autoplot',
     license='LICENSE.txt',
-    description='Interface to Autoplot library',
+    description='Interface to Autoplot Java library',
     long_description=open('README.rst').read(),
     install_requires=install_requires
 )
