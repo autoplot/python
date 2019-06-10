@@ -1,4 +1,3 @@
-import pytest
 from autoplot import javaaddpath
 
 def test_javaaddpath():
