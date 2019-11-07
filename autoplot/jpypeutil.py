@@ -52,7 +52,8 @@ def javaaddpath( url, jdwpPort=-1 ):
           status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
           status = status + chr(8)*(len(status)+1)
           status = '\r' + status
-          print( status, end=' ' )
+          print( status ) # support Python 2.7
+          #print( status, end=' ' )
        print('')
 
        f.close()
