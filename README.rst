@@ -26,6 +26,7 @@ Install using `pip install autoplot`
 
   from matplotlib import pyplot as plt
   plt.plot(vv)
+  plt.show()
 
 Contact
 -------------------------------
