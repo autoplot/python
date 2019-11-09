@@ -26,7 +26,7 @@ Install using `pip install autoplot`
   tt= toDateTime( apds, 'dep0' )
 
   from matplotlib import pyplot as plt
-  plt.plot(vv)
+  plt.plot(tt,vv)
   plt.show()
 
 Contact
