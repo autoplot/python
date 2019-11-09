@@ -53,7 +53,7 @@ def javaaddpath( url, jdwpPort=-1 ):
           status = status + chr(8)*(len(status)+1)
           status = '\r' + status
           print( status ) # support Python 2.7
-          #print( status, end=' ' )
+          #print( status, end=' ' )  #  Python 3.x code to be used soon.
        print('')
 
        f.close()
@@ -71,8 +71,17 @@ def javaaddpath( url, jdwpPort=-1 ):
 
     return jpype.JPackage("org")
 
+def toDateTime( apds, name ):
+    'extract timetags identified by name to numpy array of datetimes'
+    import datetime,numpy
+    apds.setPreferredUnits( 'microseconds since 2000-01-01T00:00' )
+    g_base= datetime.datetime( 2000,1,1,0,0,0 )
+    dd= apds.values(name)
+    result= numpy.array( [ g_base + datetime.timedelta( microseconds=dd[i] ) for i in range(len(dd)) ] )
+    return result
 
 def ndarray2qdataset( X, Y=None, Z=None ):
+    'convert the ndarrays to Autoplot QDataSet objects.'
     import jpype
     if not jpype.isJVMStarted():
         raise Exception('Java is not running, use javaaddpath')
