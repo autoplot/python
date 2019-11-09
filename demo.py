@@ -1,4 +1,4 @@
-from autoplot import javaaddpath
+from autoplot import javaaddpath,toDateTime
 
 org = javaaddpath('http://autoplot.org/jnlp/latest/autoplot.jar')
 apds = org.autoplot.idlsupport.APDataSet()
@@ -9,7 +9,10 @@ apds.doGetDataSet()
 print( apds.toString() )
 
 vv= apds.values()
+tt= toDateTime( apds, 'dep0' )
 
 from matplotlib import pyplot as plt
 
-plt.plot(vv)
+plt.plot(tt,vv)
+plt.show()
+
