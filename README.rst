@@ -5,7 +5,7 @@ Install using `pip install autoplot`
 
 .. code:: python
 
-  from autoplot import javaaddpath
+  from autoplot import javaaddpath, toDateTime
 
   # Download autoplot.jar if needed and return Python bridge object
   org = javaaddpath('http://autoplot.org/jnlp/latest/autoplot.jar')
@@ -23,9 +23,10 @@ Install using `pip install autoplot`
 
   # Extract data values
   vv = apds.values()
+  tt= toDateTime( apds, 'dep0' )
 
   from matplotlib import pyplot as plt
-  plt.plot(vv)
+  plt.plot(tt,vv)
   plt.show()
 
 Contact
