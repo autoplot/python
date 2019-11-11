@@ -26,7 +26,7 @@ version-tag-push:
 	git push --tags
 
 package:
-	make dist/hapiclient-$(VERSION).tar.gz
+	make dist/autoplot-$(VERSION).tar.gz
 
 dist/autoplot-$(VERSION).tar.gz:
 	python setup.py sdist
