@@ -22,7 +22,7 @@ version-tag-commit:
 	echo "done push"
 
 version-tag-push:
-	git tag -a v$(VERSION) -m "Version "$(VERSION)
+	git tag -a v$(VERSION) -m "Version $(VERSION)"
 	git push --tags
 
 package:
