@@ -4,6 +4,8 @@
 #   make test PYTHON=python2.7
 #   make test PYTHON=python3.6
 #   make version-tag VERSION=0.0.2
+#   echo "One must manually update the version in setup.py"
+#   make package VERSION=0.0.2
 #   make release VERSION=0.0.2
 
 SHELL:= /bin/bash
@@ -29,6 +31,7 @@ package:
 	make dist/autoplot-$(VERSION).tar.gz
 
 dist/autoplot-$(VERSION).tar.gz:
+	# TODO: one must manually update the version
 	python setup.py sdist
 
 release: dist/autoplot-$(VERSION).tar.gz
