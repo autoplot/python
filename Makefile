@@ -16,7 +16,7 @@ version-tag: version-tag-commit version-tag-push
 
 version-tag-commit:
 	echo "VERSION=$(VERSION)"
-	git commit -a -m "Last $(VERSION) commit"
+	- git commit -a -m "Last $(VERSION) commit"
 	echo "done commit"	
 	git push
 	echo "done push"
