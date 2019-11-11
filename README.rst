@@ -20,9 +20,12 @@ Install using `pip install autoplot`
   apds.doGetDataSet()
 
   print(apds.toString())
+  # http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0
+  # data: data[dep0=288] (dimensionless)
+  # dep0: dep0[288] (days since 1899-12-30T00:00:00.000Z) (DEPEND_0)
 
   # Extract data values
-  vv = apds.values()
+  vv = apds.values('data')
   tt= toDateTime( apds, 'dep0' )
 
   from matplotlib import pyplot as plt
