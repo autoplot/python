@@ -1,8 +1,8 @@
 from __future__ import print_function
 
 def javaaddpath( url, jdwpPort=-1 ):
-    '''Start up JVM, import JAR at URL, and import the path into the Python namespace.
-
+    '''Start up JVM, import JAR at URL, and import the paths starting with org into the Python namespace.
+    com= jpype.JPackage('com') can be used to the com package into the Python namespace.
     Example:
       org = javaaddpath('http://autoplot.org/jnlp/devel/autoplot.jar')
     '''
