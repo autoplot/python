@@ -15,7 +15,7 @@ URL=https://upload.pypi.org/
 version-tag: version-tag-commit version-tag-push
 
 version-tag-commit:
-        echo "VERSION=$(VERSION)"
+	echo "VERSION=$(VERSION)"
 	git commit -a -m "Last $(VERSION) commit"
 	git push
 
