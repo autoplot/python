@@ -12,3 +12,5 @@ MANIFEST
 .ipynb_checkpoints/
 .vscode/
 .idea
+build
+
