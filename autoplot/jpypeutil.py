@@ -94,10 +94,10 @@ def as_ndarray( apds, name ):
     if ( u.find(' since ')>-1 ):
         g_base= np.datetime64( '2000-01-01T00:00:00Z' )
         dd= apds.values(name)
-        result= numpy.array( [ g_base + np.timedelta64( int(dd[i]*1000), 'ns' ) for i in range(len(dd)) ] )
+        result= np.array( [ g_base + np.timedelta64( int(dd[i]*1000), 'ns' ) for i in range(len(dd)) ] )
     else:
         dd= apds.values(name)
-        result= numpy.array( dd )
+        result= np.array( dd )
     return result
 
 def ndarray2qdataset( X, Y=None, Z=None ):
