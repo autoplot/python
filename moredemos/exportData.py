@@ -27,8 +27,8 @@ tt = as_ndarray( apds, 'dep0' )
 
 # Now export the same data using Autoplot
 sc= org.autoplot.ScriptContext
-vvqds= ndarray2qdataset( vv )
 ttqds= ndarray2qdataset( tt )
+vvqds= ndarray2qdataset( tt, vv )
 
 sc.formatDataSet( ttqds, '/tmp/swe-np.cdf?Times' )
 sc.formatDataSet( vvqds, '/tmp/swe-np.cdf?Dens&append=T' )
