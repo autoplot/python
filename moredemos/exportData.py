@@ -1,11 +1,11 @@
-# demo how Autoplot library is used to export data.
-
-# first load data into python arrays
+# demo how Autoplot library is used to export data.  This
+# loads an xls file into ndarrays, and then formats the 
+# data to a CDF file.
 
 from autoplot import javaaddpath, toDateTime
 
 # Download autoplot.jar if needed and return Python bridge object
-org = javaaddpath('http://autoplot.org/jnlp/latest/autoplot.jar')
+org = javaaddpath('http://autoplot.org/jnlp/devel/autoplot.jar')
 
 # Create Autoplot Data Set
 apds = org.autoplot.idlsupport.APDataSet()
@@ -22,10 +22,13 @@ print(apds.toString())
 # dep0: dep0[288] (days since 1899-12-30T00:00:00.000Z) (DEPEND_0)
 
 # Extract data values
-vv = apds.values('data')
-tt= toDateTime( apds, 'dep0' )
+vv = as_ndarray( apds, 'data' )
+tt = as_ndarray( apds, 'dep0' )
 
 # Now export the same data using Autoplot
 sc= org.autoplot.ScriptContext
-ds= ndarray2qdataset( tt )
-sc.formatDataSet( ds, '/tmp/oneD.cdf' )
+vvqds= ndarray2qdataset( vv )
+ttqds= ndarray2qdataset( tt )
+
+sc.formatDataSet( ttqds, '/tmp/swe-np.cdf?Times' )
+sc.formatDataSet( vvqds, '/tmp/swe-np.cdf?Dens&append=T' )
