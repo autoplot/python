@@ -73,15 +73,35 @@ def javaaddpath( url, jdwpPort=-1 ):
 
 def toDateTime( apds, name ):
     'extract timetags identified by name to numpy array of datetimes'
-    import datetime,numpy
+    import numpy as np
     apds.setPreferredUnits( 'microseconds since 2000-01-01T00:00' )
-    g_base= datetime.datetime( 2000,1,1,0,0,0 )
-    dd= apds.values(name)
-    result= numpy.array( [ g_base + datetime.timedelta( microseconds=dd[i] ) for i in range(len(dd)) ] )
+    u= apds.propertyAsString( name,'UNITS' )
+    print( 'units=%s' % u )
+    if ( u.find(' since ')>-1 ):
+        g_base= np.datetime64( '2000-01-01T00:00:00Z' )
+        dd= apds.values(name)
+        result= np.array( [ g_base + np.timedelta64( int(dd[i]*1000), 'ns' ) for i in range(len(dd)) ] )
+    else:
+        dd= apds.values(name)
+        result= np.array( dd )
+    return result
+
+def as_ndarray( apds, name ):
+    'extract timetags identified by name to numpy array of datetimes'
+    import numpy as np
+    apds.setPreferredUnits( 'microseconds since 2000-01-01T00:00' )
+    u= apds.propertyAsString( name,'UNITS' )
+    if ( u.find(' since ')>-1 ):
+        g_base= np.datetime64( '2000-01-01T00:00:00Z' )
+        dd= apds.values(name)
+        result= numpy.array( [ g_base + np.timedelta64( int(dd[i]*1000), 'ns' ) for i in range(len(dd)) ] )
+    else:
+        dd= apds.values(name)
+        result= numpy.array( dd )
     return result
 
 def ndarray2qdataset( X, Y=None, Z=None ):
-    'convert the ndarrays to Autoplot QDataSet objects.'
+    'convert the ndarrays to Autoplot QDataSet objects.  datetime64 are handled by converting to QDataSet with Units.us2000'
     import jpype
     if not jpype.isJVMStarted():
         raise Exception('Java is not running, use javaaddpath')
@@ -89,23 +109,27 @@ def ndarray2qdataset( X, Y=None, Z=None ):
     dataset= org.das2.qds.ops.Ops.dataset
     link= org.das2.qds.ops.Ops.link
     transpose= org.das2.qds.ops.Ops.transpose
+    import numpy as np
+
     if ( Y is None and Z is None ):
-        xds= dataset( jpype.JArray(jpype.JDouble,X.ndim)(X.tolist()) )
+        if ( str(X.dtype).startswith('datetime64') or str(X.dtype).startswith('<M8') ):  
+            g_base= np.datetime64( '2000-01-01T00:00:00Z' )
+            X= ( X - g_base ) / np.timedelta64(1000,'ns')
+            xds= dataset( jpype.JArray(jpype.JDouble,X.ndim)(X.tolist()) )
+            xds.putProperty( org.das2.qds.QDataSet.UNITS, org.das2.datum.Units.us2000 )
+            print(xds.property('UNITS'))
+        else:
+            xds= dataset( jpype.JArray(jpype.JDouble,X.ndim)(X.tolist()) )
         if ( xds.rank()==2 ): xds= transpose( xds )
         return xds
     elif ( Z is None ):
-        xds= dataset( jpype.JArray(jpype.JDouble,X.ndim)(X.tolist()) )
-        if ( xds.rank()==2 ): xds= transpose( xds )
-        yds= dataset( jpype.JArray(jpype.JDouble,Y.ndim)(Y.tolist()) )
-        if ( yds.rank()==2 ): yds= transpose( yds )
+        xds= ndarray2qdataset( X )
+        yds= ndarray2qdataset( Y )
         return link( xds, yds )
     else:
-        xds= dataset( jpype.JArray(jpype.JDouble,X.ndim)(X.tolist()) )
-        if ( xds.rank()==2 ): xds= transpose( xds )
-        yds= dataset( jpype.JArray(jpype.JDouble,Y.ndim)(Y.tolist()) )
-        if ( yds.rank()==2 ): yds= transpose( yds )
-        zds= dataset( jpype.JArray(jpype.JDouble,Z.ndim)(Z.tolist()) )
-        if ( zds.rank()==2 ): zds= transpose( zds )
+        xds= ndarray2qdataset( X )
+        yds= ndarray2qdataset( Y )
+        zds= ndarray2qdataset( Z )
         return link( xds, yds, zds )
 
 """
