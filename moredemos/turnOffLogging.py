@@ -3,6 +3,7 @@
 import autoplot
 import jpype
 
+# wget -O /tmp/autoplot.jar https://ci-pw.physics.uiowa.edu/job/autoplot-release/1824/artifact/autoplot/Autoplot/dist/autoplot.jar
 jpype.startJVM(jpype.getDefaultJVMPath(),'-Djava.class.path=/tmp/autoplot.jar')
 
 # turn off logging
