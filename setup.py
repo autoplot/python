@@ -17,7 +17,7 @@ if sys.argv[1] == 'develop':
 
 setup(
     name='autoplot',
-    version='0.1.3',
+    version='0.1.4',
     author='Jeremy Faden',
     author_email='faden@cottagesystems.com',
     packages=find_packages(), 
