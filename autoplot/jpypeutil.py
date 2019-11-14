@@ -76,7 +76,6 @@ def toDateTime( apds, name ):
     import numpy as np
     apds.setPreferredUnits( 'microseconds since 2000-01-01T00:00' )
     u= apds.propertyAsString( name,'UNITS' )
-    print( 'units=%s' % u )
     if ( u.find(' since ')>-1 ):
         g_base= np.datetime64( '2000-01-01T00:00:00Z' )
         dd= apds.values(name)
@@ -87,7 +86,7 @@ def toDateTime( apds, name ):
     return result
 
 def as_ndarray( apds, name ):
-    'extract timetags identified by name to numpy array of datetimes'
+    'extract the data identified by name to numpy array, using datetime64 for times.'
     import numpy as np
     apds.setPreferredUnits( 'microseconds since 2000-01-01T00:00' )
     u= apds.propertyAsString( name,'UNITS' )
