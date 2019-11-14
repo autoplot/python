@@ -10,7 +10,6 @@ logging= jpype.JPackage('java.util.logging')
 l= logging.Logger.getLogger('qdataset.bridge')
 l.setLevel(logging.Level.WARNING)
 
-org= javaaddpath('http://autoplot.org/devel/autoplot.jar')
 org= jpype.JPackage('org')
 
 apds = org.autoplot.idlsupport.APDataSet()
