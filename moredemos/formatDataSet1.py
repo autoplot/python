@@ -8,7 +8,7 @@ Z1 = mlab.bivariate_normal(X, Y, 1.0, 1.0, 0.0, 0.0)
 Z2 = mlab.bivariate_normal(X, Y, 1.5, 0.5, 1, 1)
 Z = 10.0 * (Z2 - Z1)
 from autoplot import *
-jpype= javaaddpath( 'https://ci-pw.physics.uiowa.edu/job/autoplot-release/lastSuccessfulBuild/artifact/autoplot/Autoplot/dist/autoplot.jar', jdwpPort=1141 )
+jpype= javaaddpath( 'http://autoplot.org/latest/autoplot.jar' )
 ds= ndarray2qdataset( x, y, Z )
 org= jpype.JPackage('org')
 sc= org.autoplot.ScriptContext
