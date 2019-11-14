@@ -3,7 +3,7 @@
 import autoplot
 import jpype
 
-jpype.startJVM(jpype.getDefaultJVMPath(),'-Dclasspath=/tmp/autoplot.jar')
+jpype.startJVM(jpype.getDefaultJVMPath(),'-Djava.class.path=/tmp/autoplot.jar')
 
 # turn off logging
 logging= jpype.JPackage('java.util.logging')
