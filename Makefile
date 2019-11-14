@@ -9,7 +9,7 @@
 #   make release VERSION=0.0.2
 
 SHELL:= /bin/bash
-VERSION=0.0.0
+VERSION=0.1.3  # should match setup.py
 PYTHONV=3.6
 PYTHON=python$(PYTHONV)
 URL=https://upload.pypi.org/
