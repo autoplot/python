@@ -1,7 +1,7 @@
 Autoplot is a Java application which can read data from many sources, such as ASCII tables, NASA CDF files, and HDF5 files.  It can also read data from data servers, such as the server at NASA/Goddard/CDAWeb, Das2Servers used by the Radio and
 Plasma Wave Group at the University of Iowa, and servers supporting the HAPI API.
 
-Autoplot identifies data using "URIs", which are one-line strings containing a data source ID and configuration to read the data.  Data are read into a standard data model, QDataset, which is easily adapted to Python using "JPype".
+Autoplot identifies data using "URIs", which are one-line strings containing a data source ID and configuration to read the data.  Data are read into a standard data model, QDataset, which is easily adapted to Python using "JPype".  Helper procedures from the autoplot package convert QDataSets into ndarrays.
 
 Autoplot/Python Interface Tools
 -------------------------------
