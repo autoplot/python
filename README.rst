@@ -10,7 +10,7 @@ Install using `pip install autoplot`
 
 .. code:: python
 
-  from autoplot import javaaddpath, toDateTime
+  from autoplot import *
 
   # Download autoplot.jar if needed and return Python bridge object
   org = javaaddpath('http://autoplot.org/jnlp/latest/autoplot.jar')
@@ -30,8 +30,8 @@ Install using `pip install autoplot`
   # dep0: dep0[288] (days since 1899-12-30T00:00:00.000Z) (DEPEND_0)
 
   # Extract data values
-  vv = apds.values('data')
-  tt= toDateTime( apds, 'dep0' )
+  vv = to_ndarray(apds, 'data')
+  tt= to_ndarray(apds, 'dep0')
 
   from matplotlib import pyplot as plt
   plt.plot(tt,vv)
