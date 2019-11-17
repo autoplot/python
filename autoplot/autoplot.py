@@ -110,13 +110,13 @@ def to_qdataset( X, Y=None, Z=None ):
         if ( xds.rank()==2 ): xds= transpose( xds )
         return xds
     elif ( Z is None ):
-        xds= ndarray2qdataset( X )
-        yds= ndarray2qdataset( Y )
+        xds= to_qdataset( X )
+        yds= to_qdataset( Y )
         return link( xds, yds )
     else:
-        xds= ndarray2qdataset( X )
-        yds= ndarray2qdataset( Y )
-        zds= ndarray2qdataset( Z )
+        xds= to_qdataset( X )
+        yds= to_qdataset( Y )
+        zds= to_qdataset( Z )
         return link( xds, yds, zds )
 
 """
