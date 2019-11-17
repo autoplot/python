@@ -2,7 +2,7 @@
 # loads an xls file into ndarrays, and then formats the 
 # data to a CDF file.
 
-from autoplot import javaaddpath, toDateTime
+from autoplot import javaaddpath, to_ndarray, to_qdataset
 
 # Download autoplot.jar if needed and return Python bridge object
 org = javaaddpath('http://autoplot.org/jnlp/latest/autoplot.jar')
