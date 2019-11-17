@@ -1,5 +1,6 @@
 # Allow "from autoplot import javaaddpath"
-from autoplot.jpypeutil import javaaddpath
-from autoplot.jpypeutil import applot,ndarray2qdataset
-from autoplot.jpypeutil import toDateTime
+from autoplot.autoplot import javaaddpath
+from autoplot.autoplot import applot
+from autoplot.autoplot import to_qdataset
+from autoplot.autoplot import to_ndarray
 

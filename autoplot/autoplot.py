@@ -71,26 +71,14 @@ def javaaddpath( url, jdwpPort=-1 ):
 
     return jpype.JPackage("org")
 
-def toDateTime( apds, name ):
-    'extract timetags identified by name to numpy array of datetimes'
-    import numpy as np
-    apds.setPreferredUnits( 'microseconds since 2000-01-01T00:00' )
-    u= apds.propertyAsString( name,'UNITS' )
-    if ( u.find(' since ')>-1 ):
-        g_base= np.datetime64( '2000-01-01T00:00:00Z' )
-        dd= apds.values(name)
-        result= np.array( [ g_base + np.timedelta64( int(dd[i]*1000), 'ns' ) for i in range(len(dd)) ] )
-    else:
-        dd= apds.values(name)
-        result= np.array( dd )
-    return result
-
-def as_ndarray( apds, name ):
+def to_ndarray( apds, name ):
     'extract the data identified by name to numpy array, using datetime64 for times.'
     import numpy as np
+    import jpype
+    org= jpype.JPackage('org')
     apds.setPreferredUnits( 'microseconds since 2000-01-01T00:00' )
-    u= apds.propertyAsString( name,'UNITS' )
-    if ( u.find(' since ')>-1 ):
+    u= org.das2.datum.Units.lookupUnits( apds.propertyAsString( name,'UNITS' ) )
+    if ( u.isConvertibleTo( org.das2.datum.Units.us2000 ) ):
         g_base= np.datetime64( '2000-01-01T00:00:00Z' )
         dd= apds.values(name)
         result= np.array( [ g_base + np.timedelta64( int(dd[i]*1000), 'ns' ) for i in range(len(dd)) ] )
@@ -99,7 +87,7 @@ def as_ndarray( apds, name ):
         result= np.array( dd )
     return result
 
-def ndarray2qdataset( X, Y=None, Z=None ):
+def to_qdataset( X, Y=None, Z=None ):
     'convert the ndarrays to Autoplot QDataSet objects.  datetime64 are handled by converting to QDataSet with Units.us2000'
     import jpype
     if not jpype.isJVMStarted():
@@ -141,10 +129,9 @@ import matplotlib.mlab as mlab
 Z1 = mlab.bivariate_normal(X, Y, 1.0, 1.0, 0.0, 0.0)
 Z2 = mlab.bivariate_normal(X, Y, 1.5, 0.5, 1, 1)
 Z = 10.0 * (Z2 - Z1)
-from jpypeutil import *
-jpype= javaaddpath( 'https://ci-pw.physics.uiowa.edu/job/autoplot-release/lastSuccessfulBuild/artifact/autoplot/Autoplot/dist/autoplot.jar', jdwpPort=1141 )
-ds= ndarray2qdataset( x, y, Z )
-org= jpype.JPackage('org')
+from autoplot import *
+org= javaaddpath( 'https://ci-pw.physics.uiowa.edu/job/autoplot-release/lastSuccessfulBuild/artifact/autoplot/Autoplot/dist/autoplot.jar', jdwpPort=1141 )
+ds= to_qdataset( x, y, Z )
 sc= org.autoplot.ScriptContext
 sc.formatDataSet( ds, '/tmp/cdffile.cdf' )
 
@@ -152,7 +139,8 @@ sc.formatDataSet( ds, '/tmp/cdffile.cdf' )
 
 def applot( X, Y=None, Z=None ):
    'plot Python arrays or ndarrays in Autoplot'
-   ds= ndarray2qdataset( X, Y )
+   ds= to_qdataset( X, Y )
    org= jpype.JPackage('org')
    sc= org.autoplot.ScriptContext()
    sc.plot( ds )
+
