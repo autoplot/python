@@ -139,6 +139,9 @@ sc.formatDataSet( ds, '/tmp/cdffile.cdf' )
 
 def applot( X, Y=None, Z=None ):
    'plot Python arrays or ndarrays in Autoplot'
+   import jpype
+   if not jpype.isJVMStarted():
+       raise Exception('Java is not running, use javaaddpath')
    ds= to_qdataset( X, Y )
    org= jpype.JPackage('org')
    sc= org.autoplot.ScriptContext()
