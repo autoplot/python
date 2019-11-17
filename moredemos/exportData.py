@@ -5,7 +5,7 @@
 from autoplot import javaaddpath, toDateTime
 
 # Download autoplot.jar if needed and return Python bridge object
-org = javaaddpath('http://autoplot.org/jnlp/devel/autoplot.jar')
+org = javaaddpath('http://autoplot.org/jnlp/latest/autoplot.jar')
 
 # Create Autoplot Data Set
 apds = org.autoplot.idlsupport.APDataSet()
@@ -22,13 +22,13 @@ print(apds.toString())
 # dep0: dep0[288] (days since 1899-12-30T00:00:00.000Z) (DEPEND_0)
 
 # Extract data values
-vv = as_ndarray( apds, 'data' )
-tt = as_ndarray( apds, 'dep0' )
+vv = to_ndarray( apds, 'data' )
+tt = to_ndarray( apds, 'dep0' )
 
 # Now export the same data using Autoplot
 sc= org.autoplot.ScriptContext
-ttqds= ndarray2qdataset( tt )
-vvqds= ndarray2qdataset( tt, vv )
+ttqds= to_qdataset( tt )
+vvqds= to_qdataset( tt, vv )
 
 sc.formatDataSet( ttqds, '/tmp/swe-np.cdf?Times' )
 sc.formatDataSet( vvqds, '/tmp/swe-np.cdf?Dens&append=T' )
