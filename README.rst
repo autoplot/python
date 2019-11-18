@@ -42,6 +42,5 @@ Install using `pip install autoplot`
 
 Contact
 -------------------------------
-
 Jeremy Faden <faden@cottagesystems.net>
 
