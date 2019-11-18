@@ -10,14 +10,14 @@ if platform.system() == 'Darwin':
     import os
     os.system("export MACOSX_DEPLOYMENT_TARGET=10.10")
 
-install_requires = ["jpype1"]
+install_requires = ["jpype1","numpy"]
 
 if sys.argv[1] == 'develop':
     install_requires.append("pytest")
 
 setup(
     name='autoplot',
-    version='0.2.1',
+    version='0.2.2',
     author='Jeremy Faden',
     author_email='faden@cottagesystems.com',
     packages=find_packages(), 
