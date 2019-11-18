@@ -88,7 +88,7 @@ def to_ndarray( apds, name ):
     return result
 
 def to_qdataset( X, Y=None, Z=None ):
-    'convert the ndarrays to Autoplot QDataSet objects.  datetime64 are handled by converting to QDataSet with Units.us2000'
+    'convert the ndarrays or array like objects to Autoplot QDataSet objects.  datetime64 are handled by converting to QDataSet with Units.us2000'
     import jpype
     if not jpype.isJVMStarted():
         raise Exception('Java is not running, use javaaddpath')
@@ -99,15 +99,19 @@ def to_qdataset( X, Y=None, Z=None ):
     import numpy as np
 
     if ( Y is None and Z is None ):
-        if ( str(X.dtype).startswith('datetime64') or str(X.dtype).startswith('<M8') ):  
-            g_base= np.datetime64( '2000-01-01T00:00:00Z' )
-            X= ( X - g_base ) / np.timedelta64(1000,'ns')
-            xds= dataset( jpype.JArray(jpype.JDouble,X.ndim)(X.tolist()) )
-            xds.putProperty( org.das2.qds.QDataSet.UNITS, org.das2.datum.Units.us2000 )
-            print(xds.property('UNITS'))
+        if ( isinstance( X, jpype.JavaObject ) ): 
+            xds=X  # assume it's a QDataSet already
         else:
-            xds= dataset( jpype.JArray(jpype.JDouble,X.ndim)(X.tolist()) )
-        if ( xds.rank()==2 ): xds= transpose( xds )
+            if ( not hasattr(X,'dtype') ):
+                X= np.array(X)
+            if ( str(X.dtype).startswith('datetime64') or str(X.dtype).startswith('<M8') ):  
+                g_base= np.datetime64( '2000-01-01T00:00:00Z' )
+                X= ( X - g_base ) / np.timedelta64(1000,'ns')
+                xds= dataset( jpype.JArray(jpype.JDouble,X.ndim)(X.tolist()) )
+                xds.putProperty( org.das2.qds.QDataSet.UNITS, org.das2.datum.Units.us2000 )
+            else:
+                xds= dataset( jpype.JArray(jpype.JDouble,X.ndim)(X.tolist()) )        
+            if ( xds.rank()==2 ): xds= transpose( xds )
         return xds
     elif ( Z is None ):
         xds= to_qdataset( X )
@@ -119,31 +123,13 @@ def to_qdataset( X, Y=None, Z=None ):
         zds= to_qdataset( Z )
         return link( xds, yds, zds )
 
-"""
-import numpy as np
-delta = 0.025
-x = np.arange(-3.0, 3.0, delta)
-y = np.arange(-2.0, 2.0, delta)
-X, Y = np.meshgrid(x, y)
-import matplotlib.mlab as mlab
-Z1 = mlab.bivariate_normal(X, Y, 1.0, 1.0, 0.0, 0.0)
-Z2 = mlab.bivariate_normal(X, Y, 1.5, 0.5, 1, 1)
-Z = 10.0 * (Z2 - Z1)
-from autoplot import *
-org= javaaddpath( 'https://ci-pw.physics.uiowa.edu/job/autoplot-release/lastSuccessfulBuild/artifact/autoplot/Autoplot/dist/autoplot.jar', jdwpPort=1141 )
-ds= to_qdataset( x, y, Z )
-sc= org.autoplot.ScriptContext
-sc.formatDataSet( ds, '/tmp/cdffile.cdf' )
-
-"""
-
 def applot( X, Y=None, Z=None ):
    'plot Python arrays or ndarrays in Autoplot'
    import jpype
    if not jpype.isJVMStarted():
        raise Exception('Java is not running, use javaaddpath')
-   ds= to_qdataset( X, Y )
+   ds= to_qdataset( X, Y, Z )
    org= jpype.JPackage('org')
-   sc= org.autoplot.ScriptContext()
+   sc= org.autoplot.ScriptContext
    sc.plot( ds )
 
