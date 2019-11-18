@@ -1,3 +1,5 @@
+from autoplot import *
+import jpype
 
 org= javaaddpath('http://autoplot.org/latest/autoplot.jar')
 javax= jpype.JPackage('javax')
