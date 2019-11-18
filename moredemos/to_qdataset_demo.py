@@ -3,7 +3,10 @@
 from autoplot import *
 org = javaaddpath('http://autoplot.org/jnlp/latest/autoplot.jar')
 
+org.autoplot.ScriptContext.createGui()
+
 zz= to_qdataset( [ 1,2,3,4,5,6,4,3,2,1 ] )
+
 applot( zz )
 
 import numpy as np
