@@ -3,12 +3,13 @@ import jpype
 
 print('This will cause some platforms to hang!')
 
+org = javaaddpath('http://autoplot.org/latest/autoplot.jar')
+
 java= jpype.JPackage('java')
 if java.lang.System.getProperty('os.name') == 'Mac OS X':
-    print 'disabling GUI on Mac because it will hang'
+    print( 'disabling GUI on Mac because it will hang' )
     java.lang.System.setProperty('java.awt.headless','true')
 
-org = javaaddpath('http://autoplot.org/latest/autoplot.jar')
 javax= jpype.JPackage('javax')
 javax.swing.JOptionPane.showMessageDialog(None, 'Java Swing is Okay')
 
