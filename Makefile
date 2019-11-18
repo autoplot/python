@@ -1,15 +1,15 @@
 # To make a release, edit `version` keyword in setup.py and
 # modify make commands below accordingly. Then
-#   git commit
+#   git commit .
 #   make test PYTHON=python2.7
 #   make test PYTHON=python3.6
-#   make version-tag VERSION=0.0.2
+#   make version-tag 
 #   echo "One must manually update the version in setup.py"
-#   make package VERSION=0.0.2
-#   make release VERSION=0.0.2
+#   make package 
+#   make release
 
 SHELL:= /bin/bash
-VERSION=0.2.2
+VERSION=0.2.3
 PYTHONV=3.6
 PYTHON=python$(PYTHONV)
 URL=https://upload.pypi.org/
