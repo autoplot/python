@@ -1,7 +1,7 @@
 # This does not work presently.
 
 from autoplot import *
-org = javaaddpath('http://autoplot.org/jnlp/devel/autoplot.jar')
+org = javaaddpath('http://autoplot.org/jnlp/latest/autoplot.jar')
 
 zz= to_qdataset( [ 1,2,3,4,5,6,4,3,2,1 ] )
 applot( zz )
