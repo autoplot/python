@@ -3,7 +3,7 @@ import jpype
 
 print('This will cause some platforms to hang!')
 
-org = addjavapath('http://autoplot.org/latest/autoplot.jar')
+org = javaaddpath('http://autoplot.org/latest/autoplot.jar')
 javax= jpype.JPackage('javax')
 javax.swing.JOptionPane.showMessageDialog(None, 'Java Swing is Okay')
 
