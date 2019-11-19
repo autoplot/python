@@ -147,119 +147,120 @@ def to_qdataset(X, Y=None, Z=None):
 
 def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
 
-   print( 'writing das2stream to ' + filename )
-   import time
+    print( 'writing das2stream to ' + filename )
+    import time
 
-   streamHeader= [ '[00]xxxxxx<stream source="applot.pro" localDate="'+time.asctime()+'">', '</stream>' ]
-   contentLength= -10 # don't include the packet tag and content length
-   for i in xrange( len( streamHeader ) ):
-      contentLength += len( streamHeader[i] ) + 1
+    streamHeader= [ '[00]xxxxxx<stream source="applot.pro" localDate="'+time.asctime()+'">', '</stream>' ]
+    contentLength= -10 # don't include the packet tag and content length
+    for i in xrange( len( streamHeader ) ):
+        contentLength += len( streamHeader[i] ) + 1
 
-   x= streamHeader[0]
-   x= '[00]' + '%06d' % contentLength + x[10:]
-   streamHeader[0]= x
+    x= streamHeader[0]
+    x= '[00]' + '%06d' % contentLength + x[10:]
+    streamHeader[0]= x
 
-   if ascii: xdatatype= 'ascii24'
-   else: xdatatype= 'sun_real8'
-   if ascii: datatype= 'ascii16'
-   else: datatype='sun_real8'
+    if ascii: xdatatype= 'ascii24'
+    else: xdatatype= 'sun_real8'
+    if ascii: datatype= 'ascii16'
+    else: datatype='sun_real8'
 
-   packetDescriptor= [ '[01]xxxxxx<packet>' ]
-   tags= dataStruct['tags']
-   nt= len(tags)
-   packetDescriptor.append( '   <x type="'+xdatatype+'" name="'+tags[0]+'" units="'+xunits+'" />' )
+    packetDescriptor= [ '[01]xxxxxx<packet>' ]
+    tags= dataStruct['tags']
+    nt= len(tags)
+    packetDescriptor.append( '   <x type="'+xdatatype+'" name="'+tags[0]+'" units="'+xunits+'" />' )
 
-   totalItems=1
+    totalItems=1
 
-   format=['%24.12f']
-   reclen= 4 + 24 + (nt-1) * 20
-   i=0
-   for tag in tags:
-      d= dataStruct[tag]
-      if ( i==0 ):
-          name=''
-          i=i+1
-          continue
-      else:
-          name= tags[i]    ### stream reader needs a default plane
-      if ( isinstance( d, list ) ):
-          rank= 1
-      elif ( hasattr( d, "shape") ):  # check for numpy
-          rank= len(d.shape)
+    format=['%24.12f']
+    reclen= 4 + 24 + (nt-1) * 20
+    i=0
+    for tag in tags:
+        d= dataStruct[tag]
+        if ( i==0 ):
+            name=''
+            i=i+1
+            continue
+        else:
+            name= tags[i]    ### stream reader needs a default plane
+        if ( isinstance( d, list ) ):
+            rank= 1
+        elif ( hasattr( d, "shape") ):  # check for numpy
+            rank= len(d.shape)
 
-      if ( rank==1 ):
-         packetDescriptor.append( '   <y type="'+datatype+'" name="'+name+'" units="" idlname="'+tags[i]+'" />' )
+        if ( rank==1 ):
+            packetDescriptor.append( '   <y type="'+datatype+'" name="'+name+'" units="" idlname="'+tags[i]+'" />' )
 
-         if ( i<nt-1 ): format.append('%16.4e')
-         else: format.append( '%15.3e' )
-         totalItems= totalItems + 1
-      else:
-         if ytags==None: ytags= range(s[2])
-         sytags= ','.join( [ "%f"%n for n in ytags ] )
-         nitems= len(ytags)
-         packetDescriptor.append( '   <yscan type="' +datatype+'" name="' +name +'" units="" nitems="'+str(nitems) +'" yTags="'+sytags+'"' +' />' )
+            if ( i<nt-1 ): format.append('%16.4e')
+            else: format.append( '%15.3e' )
+            totalItems= totalItems + 1
+        else:
+            if ytags==None: ytags= range(s[2])
+            sytags= ','.join( [ "%f"%n for n in ytags ] )
+            nitems= len(ytags)
+            packetDescriptor.append( '   <yscan type="' +datatype+'" name="' +name +'" units="" nitems="'+str(nitems) +'" yTags="'+sytags+'"' +' />' )
  
-         for i in xrange(1,nitems): format.append('%16.4e')
-         if ( i<nt-1 ):
-             format.append('%16.4e')
-         else:
-             format.append('%15.4e')
-         totalItems+= nitems
-      i=i+1;
+            for i in xrange(1,nitems): format.append('%16.4e')
+            if ( i<nt-1 ):
+                format.append('%16.4e')
+            else:
+                format.append('%15.4e')
+            totalItems+= nitems
+        i=i+1;
 
-   packetDescriptor.append( '</packet>' )
+    packetDescriptor.append( '</packet>' )
 
-   contentLength= -10 # don't include the packet tag and content length
-   for i in xrange(0,len(packetDescriptor)):
-       contentLength += len( packetDescriptor[i] ) + 1
+    contentLength= -10 # don't include the packet tag and content length
+    for i in xrange(0,len(packetDescriptor)):
+        contentLength += len( packetDescriptor[i] ) + 1
   
-   x= packetDescriptor[0]
-   x= x[0:4]+'%06d' % contentLength + x[10:]
-   packetDescriptor[0]= x
+    x= packetDescriptor[0]
+    x= x[0:4]+'%06d' % contentLength + x[10:]
+    packetDescriptor[0]= x
 
-   unit= open( filename, 'wb' )
+    unit= open( filename, 'wb' )
 
-   for i in xrange(len(streamHeader)):
-     unit.write( streamHeader[i] )
-     unit.write( '\n' )
+    for i in xrange(len(streamHeader)):
+        unit.write( streamHeader[i] )
+        unit.write( '\n' )
 
-   for i in xrange(len(packetDescriptor)):
-     unit.write( packetDescriptor[i] )
-     unit.write( '\n' )   
+    for i in xrange(len(packetDescriptor)):
+        unit.write( packetDescriptor[i] )
+        unit.write( '\n' )   
 
-   nr= len( dataStruct['x'] )
-   
-   keys= dataStruct.keys()
-   
-   newline= ascii
-   for i in range(nr):
-      unit.write( ':01:' )
-      for j in xrange(nt):
-         tag= tags[j]
-         if ( ascii ):
-            rec= dataStruct[tag][i]
-            if hasattr(rec, "__len__"):
-               l= len(rec)
-               for k in xrange(l):
-                  s= format[j] %  rec[k]
+    nr= len( dataStruct['x'] )
+ 
+    keys= dataStruct.keys()
+
+    newline= ascii
+    for i in range(nr):
+        unit.write( ':01:' )
+        for j in xrange(nt):
+            tag= tags[j]
+            if ( ascii ):
+               rec= dataStruct[tag][i]
+               if hasattr(rec, "__len__"):
+                  l= len(rec)
+                  for k in xrange(l):
+                     s= format[j] %  rec[k]
+                     unit.write( s )
+                  if ( j==nt-1 ): newline=False
+               else:
+                  s= format[j] % rec
                   unit.write( s )
-               if ( j==nt-1 ): newline=False
             else:
-               s= format[j] % rec
-               unit.write( s )
-         else:
-            import struct
-            rec= dataStruct[tag][i]
-            if hasattr(rec, "__len__"):
-               l= len(rec)
-               for j in xrange(l):
-                  unit.write( struct.pack( '>d', rec[j] ) )
-            else:
-               unit.write( struct.pack( '>d', rec ) )
+               import struct
+               rec= dataStruct[tag][i]
+               if hasattr(rec, "__len__"):
+                  l= len(rec)
+                  for j in xrange(l):
+                     unit.write( struct.pack( '>d', rec[j] ) )
+               else:
+                  unit.write( struct.pack( '>d', rec ) )
 
-      if ( newline ): unit.write( '\n' )
-    
-   unit.close() 
+        if ( newline ): unit.write( '\n' )
+
+    unit.close() 
+
 
 def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus=None, delta_minus=None ):
     """for rank 2, ytags must be specified ascii, boolean, use ascii transfer types"""
@@ -466,8 +467,8 @@ ARGUMENTS:
     X,Y,Z as with plot.  If X is an integer, then it is the position in Autoplot, so that multiple plots can be sent to 
       one Autoplot canvas.
 CALLING SEQUENCE:
-    plot( X, Y )
-    plot( X, Y, Z )  for a spectrogram
+    applot( X, Y )
+    applot( X, Y, Z )  for a spectrogram
 
 KEYWORDS:
    tmpfile=     explicitly set the file used to move data into Autoplot.  This can also be used with /noplot
@@ -491,7 +492,7 @@ KEYWORDS:
         import glob
         ff= glob.glob( '/tmp/' + 'autoplot.' + tag + '.???.'+ext )
         seq= '.%03d.' % len(ff)
-        tmpfile= '/tmp/' + 'autoplot.' + tag + seq +ext   # TODO: IDL version handles multiple plots in one second.
+        tmpfile= '/tmp/' + 'autoplot.' + tag + seq + ext  
     else:
         if ( tmpfile.index('.'+ext) != len(tmpfile)-4 ):
             tmpfile= tmpfile + '.'+ext  # add the extension
@@ -526,7 +527,7 @@ KEYWORDS:
    
     ascii=1
 
-    if ( True ):
+    if ( False ):
         if ( ext != 'qds' ):
             raise Exception('internal error, extension should be qds')
      
