@@ -1,6 +1,8 @@
 from __future__ import print_function
 
-
+def printNoNewline(s):
+    print(s, end=' ')
+    
 def javaaddpath(url, jdwpPort=-1):
     '''Start up JVM, import JAR at URL, and import the paths starting with org into the Python namespace.
     com= jpype.JPackage('com') can be used to the com package into the Python namespace.
@@ -53,8 +55,8 @@ def javaaddpath(url, jdwpPort=-1):
             status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
             status = status + chr(8)*(len(status)+1)
             status = '\r' + status
-            print(status)  # support Python 2.7
-            # print( status, end=' ' )  # Python 3.x code to be used soon.
+            printNoNewline(status)  # support Python 2.7 / 3.x
+
         print('')
 
         f.close()
