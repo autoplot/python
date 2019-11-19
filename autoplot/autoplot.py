@@ -438,7 +438,7 @@ def qstream(dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus=
                 rec = dataStruct[tag][i]
                 if hasattr(rec, '__len__'):
                     l = len(rec)
-                    for j in xrange(l):
+                    for j in range(l):
                         unit.write(struct.pack('>d', rec[j]))
                 else:
                     unit.write(struct.pack('>d',rec))
@@ -573,7 +573,7 @@ KEYWORDS:
             rank=1
             if ( rank==2 ):
                 data= { 'x':range(len(xx)), 'z':xx, 'tags':['x','z']  }
-                das2stream( data, tmpfile, ytags=xrange(s[2]), ascii=ascii, xunits='' )
+                das2stream( data, tmpfile, ytags=range(s[2]), ascii=ascii, xunits='' )
             else:
                 data= { 'x':range(len(xx)), 'y':xx, 'tags':['x','y']  }
                 das2stream( data, tmpfile, ascii=ascii, xunits='' )
