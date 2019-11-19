@@ -269,7 +269,6 @@ def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus
     tname= tags[0]
 
     print( 'writing qstream to ' + filename )
-    print( tags )
     import time
 
     streamHeader= [ '<stream dataset_id="'+name+'" source="applot.pro" localDate="'+time.asctime()+'">', '</stream>' ]
@@ -418,26 +417,26 @@ def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus
             format= formats[tag]
             if ascii:
                 rec= dataStruct[tag][i]
-            if hasattr(rec,'__len__'):
-                l= len(rec)
-                for k in range(l):
-                    #print( format[k] )
-                    s= format[k] % rec[k]
+                if hasattr(rec,'__len__'):
+                    l= len(rec)
+                    for k in range(l):
+                        #print( format[k] )
+                        s= format[k] % rec[k]
+                        unit.write(bytes(s,'utf8'))
+                else:
+                    s= format[0] % rec
                     unit.write(bytes(s,'utf8'))
+                if ( j==nt-1 ): 
+                    newline=True
             else:
-                s= format[0] % rec
-                unit.write(bytes(s,'utf8'))
-            if ( j==nt-1 ): 
-                newline=True
-        else:
-            import struct
-            rec= dataStruct[tag][i]
-            if hasattr(rec,"__len__"):
-                l= len(rec)
-                for j in xrange(l):
-                    unit.write( struct.pack('>d',rec[j]) )
-            else:
-                unit.write( struct.pack('>d',rec) )
+                import struct
+                rec= dataStruct[tag][i]
+                if hasattr(rec,"__len__"):
+                    l= len(rec)
+                    for j in xrange(l):
+                        unit.write( struct.pack('>d',rec[j]) )
+                else:
+                    unit.write( struct.pack('>d',rec) )
         if ( newline ):
             unit.write(bytes('\n','utf8'))
     unit.close()
