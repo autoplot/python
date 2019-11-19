@@ -267,35 +267,35 @@ def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
     unit.close() 
 
 
-def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus=None, delta_minus=None ):
+def qstream(dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus=None, delta_minus=None):
     """for rank 2, ytags must be specified ascii, boolean, use ascii transfer types"""
     tags= dataStruct['tags']
     nt= len(tags)
     name= tags[-1]
     tname= tags[0]
 
-    print( 'writing qstream to ' + filename )
+    print('writing qstream to ' + filename)
     import time
 
-    streamHeader= [ '<stream dataset_id="'+name+'" source="applot.pro" localDate="'+time.asctime()+'">', '</stream>' ]
+    streamHeader= ['<stream dataset_id="'+name+'" source="applot.pro" localDate="'+time.asctime()+'">', '</stream>']
     contentLength= 0
-    for i in range( len( streamHeader ) ):
+    for i in range(len(streamHeader)):
         contentLength += len( streamHeader[i] ) + 1
 
     x= streamHeader[0]
     x= '[00]' + '%06d' % contentLength + x
     streamHeader[0]= x
 
-    if ( ascii ): 
+    if ascii: 
         xdatatype= 'ascii24'
     else: 
         xdatatype='double'
-    if ( ascii ): 
+    if ascii: 
         datatype= 'ascii16'
     else: 
         datatype='double'
 
-    if ( ytags!=None ):
+    if ytags!=None:
         ny= len(ytags)
         svals= str(ytags[0])
         for j in range(1,len(ytags)):
@@ -318,7 +318,6 @@ def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus
         x= '[02]' + '%06d' % contentLength + x
         dep1Descriptor[0]= x
 
-
     packetDescriptor= [ '[01]xxxxxx<packet>' ]
 
     nt= len(tags)
@@ -333,7 +332,7 @@ def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus
     totalItems=1
 
     format=['%24.12f']
-    formats= { 'x':format }
+    formats= {'x':format}
    
     reclen= 4 + 24 + (nt-1) * 20
 
@@ -341,26 +340,26 @@ def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus
     for tag in tags[1:]:
         formats1= []
         d= dataStruct[tag]
-        if ( isinstance( d, list ) ):
+        if isinstance(d, list):
             rank= 1
-        elif ( hasattr( d, "shape") ):  # check for numpy
+        elif hasattr(d, "shape"):  # check for numpy
             rank= len(d.shape)
 
         name= tag  ### stream reader needs a default plane
-        if ( rank==1 ):
+        if rank==1:
             packetDescriptor.append(  '     <qdataset id="'+name+'" rank="1" >' )
             packetDescriptor.append(  '       <properties>' )
             packetDescriptor.append(  '           <property name="NAME" type="String" value="'+name+'" />' )
             packetDescriptor.append(  '           <property name="DEPEND_0" type="qdataset" value="'+tname+'" />' )
-            if ( i==1 ):
-                if ( delta_plus!=None ):
+            if i==1:
+                if not delta_plus is None:
                     packetDescriptor.append(  '           <property name="DELTA_PLUS" type="qdataset" value="'+delta_plus+'" />' )
-                if ( delta_minus!=None ):
+                if not delta_minus is None:
                     packetDescriptor.append(  '           <property name="DELTA_MINUS" type="qdataset" value="'+delta_minus+'" />' )
             packetDescriptor.append(  '       </properties>' )
             packetDescriptor.append(  '       <values encoding="'+datatype+'" length="" />' )
             packetDescriptor.append(  '     </qdataset>' )
-            if ( i<nt-1 ):
+            if i<nt-1:
                 formats1.append('%16.4e')
             else:
                 formats1.append('%15.4e')
@@ -375,9 +374,9 @@ def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus
             packetDescriptor.append(  '       </properties>' )
             packetDescriptor.append(  '       <values encoding="'+datatype+'" length="'+str(nitems)+'" />' )
             packetDescriptor.append(  '   </qdataset>' )
-            for i in range(0,nitems-1):
+            for i in range(0, nitems-1):
                 formats1.append('%16.4e')
-            if ( i<nt-1 ): 
+            if i<nt-1: 
                 formats1.append('%16.4e')
             else:
                 formats1.append('%15.4e')
@@ -394,22 +393,22 @@ def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus
     x= x[0:4] + '%06d' % contentLength + x[10:]
     packetDescriptor[0]= x
 
-    unit= open( filename, 'wb' )
+    unit= open(filename, 'wb')
 
     for i in range(len(streamHeader)):
-        unit.write( bytes(streamHeader[i],'utf8') )
-        unit.write( bytes('\n','utf8') )
+        unit.write(bytes(streamHeader[i],'utf8'))
+        unit.write(bytes('\n','utf8'))
 
     for i in range(len(packetDescriptor)):
-        unit.write( bytes(packetDescriptor[i],'utf8') )
-        unit.write( bytes('\n','utf8') )
+        unit.write(bytes(packetDescriptor[i],'utf8'))
+        unit.write(bytes('\n','utf8'))
 
     nr= len( dataStruct['x'] )
 
-    if ( not ytags is None ):
+    if not ytags is None:
         for i in range(len(dep1Descriptor)):
-            unit.write( bytes(dep1Descriptor[i],'utf8') )
-            unit.write( bytes('\n','utf8') )
+            unit.write(bytes(dep1Descriptor[i],'utf8'))
+            unit.write(bytes('\n','utf8'))
 
     nr= len(dataStruct['x'])  # number of records to output
 
@@ -428,23 +427,23 @@ def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus
                     for k in range(l):
                         #print( format[k] )
                         s= format[k] % rec[k]
-                        unit.write(bytes(s,'utf8'))
+                        unit.write(bytes(s, 'utf8'))
                 else:
                     s= format[0] % rec
-                    unit.write(bytes(s,'utf8'))
+                    unit.write(bytes(s, 'utf8'))
                 if ( j==nt-1 ): 
                     newline=True
             else:
                 import struct
                 rec= dataStruct[tag][i]
-                if hasattr(rec,"__len__"):
+                if hasattr(rec, '__len__'):
                     l= len(rec)
                     for j in xrange(l):
-                        unit.write( struct.pack('>d',rec[j]) )
+                        unit.write(struct.pack('>d', rec[j]))
                 else:
-                    unit.write( struct.pack('>d',rec) )
+                    unit.write(struct.pack('>d',rec))
         if ( newline ):
-            unit.write(bytes('\n','utf8'))
+            unit.write(bytes('\n', 'utf8'))
     unit.close()
 
 
