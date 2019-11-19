@@ -151,18 +151,22 @@ def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
     import time
 
     streamHeader= [ '[00]xxxxxx<stream source="applot.pro" localDate="'+time.asctime()+'">', '</stream>' ]
-    contentLength= -10 # don't include the packet tag and content length
-    for i in xrange( len( streamHeader ) ):
+    contentLength= -10  # don't include the packet tag and content length
+    for i in range( len( streamHeader ) ):
         contentLength += len( streamHeader[i] ) + 1
 
     x= streamHeader[0]
     x= '[00]' + '%06d' % contentLength + x[10:]
     streamHeader[0]= x
 
-    if ascii: xdatatype= 'ascii24'
-    else: xdatatype= 'sun_real8'
-    if ascii: datatype= 'ascii16'
-    else: datatype='sun_real8'
+    if ascii:
+         xdatatype= 'ascii24'
+    else:
+         xdatatype= 'sun_real8'
+    if ascii:
+         datatype= 'ascii16'
+    else:
+         datatype='sun_real8'
 
     packetDescriptor= [ '[01]xxxxxx<packet>' ]
     tags= dataStruct['tags']
@@ -199,7 +203,8 @@ def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
             nitems= len(ytags)
             packetDescriptor.append( '   <yscan type="' +datatype+'" name="' +name +'" units="" nitems="'+str(nitems) +'" yTags="'+sytags+'"' +' />' )
  
-            for i in xrange(1,nitems): format.append('%16.4e')
+            for i in range(1,nitems):
+                format.append('%16.4e')
             if ( i<nt-1 ):
                 format.append('%16.4e')
             else:
@@ -210,7 +215,7 @@ def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
     packetDescriptor.append( '</packet>' )
 
     contentLength= -10 # don't include the packet tag and content length
-    for i in xrange(0,len(packetDescriptor)):
+    for i in range(0,len(packetDescriptor)):
         contentLength += len( packetDescriptor[i] ) + 1
   
     x= packetDescriptor[0]
@@ -219,13 +224,13 @@ def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
 
     unit= open( filename, 'wb' )
 
-    for i in xrange(len(streamHeader)):
-        unit.write( streamHeader[i] )
-        unit.write( '\n' )
+    for i in range(len(streamHeader)):
+        unit.write( bytes(streamHeader[i],'utf8') )
+        unit.write( bytes('\n','utf8') )
 
-    for i in xrange(len(packetDescriptor)):
-        unit.write( packetDescriptor[i] )
-        unit.write( '\n' )   
+    for i in range(len(packetDescriptor)):
+        unit.write( bytes(packetDescriptor[i],'utf8') )
+        unit.write( bytes('\n','utf8') )   
 
     nr= len( dataStruct['x'] )
  
@@ -233,31 +238,31 @@ def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
 
     newline= ascii
     for i in range(nr):
-        unit.write( ':01:' )
-        for j in xrange(nt):
+        unit.write( bytes(':01:','utf8') )
+        for j in range(nt):
             tag= tags[j]
             if ( ascii ):
                rec= dataStruct[tag][i]
                if hasattr(rec, "__len__"):
-                  l= len(rec)
-                  for k in xrange(l):
-                     s= format[j] %  rec[k]
-                     unit.write( s )
-                  if ( j==nt-1 ): newline=False
+                   l= len(rec)
+                   for k in range(l):
+                       s= format[j] %  rec[k]
+                       unit.write( bytes(s,'utf8') )
+                   if ( j==nt-1 ): newline=False
                else:
-                  s= format[j] % rec
-                  unit.write( s )
+                   s= format[j] % rec
+                   unit.write( bytes(s,'utf8') )
             else:
                import struct
                rec= dataStruct[tag][i]
                if hasattr(rec, "__len__"):
-                  l= len(rec)
-                  for j in xrange(l):
-                     unit.write( struct.pack( '>d', rec[j] ) )
+                   l= len(rec)
+                   for j in range(l):
+                       unit.write( struct.pack( '>d', rec[j] ) )
                else:
-                  unit.write( struct.pack( '>d', rec ) )
+                   unit.write( struct.pack( '>d', rec ) )
 
-        if ( newline ): unit.write( '\n' )
+        if ( newline ): unit.write( bytes('\n','utf8') )
 
     unit.close() 
 
@@ -293,7 +298,7 @@ def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus
     if ( ytags!=None ):
         ny= len(ytags)
         svals= str(ytags[0])
-        for j in xrange(1,len(ytags)):
+        for j in range(1,len(ytags)):
             svals= svals+','+str(ytags[j]).strip()
 
         dep1Descriptor= [ '<packet>' ]
@@ -306,7 +311,7 @@ def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus
         dep1Descriptor.append( '     </packet>' )
 
         contentLength= 0 # don't include the packet tag and content length
-        for i in xrange( len( dep1Descriptor ) ):
+        for i in range( len( dep1Descriptor ) ):
             contentLength += len( dep1Descriptor[i] ) + 1
       
         x= dep1Descriptor[0]
@@ -370,7 +375,7 @@ def qstream( dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus
             packetDescriptor.append(  '       </properties>' )
             packetDescriptor.append(  '       <values encoding="'+datatype+'" length="'+str(nitems)+'" />' )
             packetDescriptor.append(  '   </qdataset>' )
-            for i in xrange(0,nitems-1):
+            for i in range(0,nitems-1):
                 formats1.append('%16.4e')
             if ( i<nt-1 ): 
                 formats1.append('%16.4e')
@@ -480,8 +485,14 @@ KEYWORDS:
 '''
 
     port= 12345
-   
-    ext='qds'
+
+    useDas2Stream=False
+
+    if useDas2Stream:    
+        ext='d2s'
+    else:
+        ext='qds'
+
     if ( delta_plus!=None ):
         ext='qds'
    
@@ -527,9 +538,7 @@ KEYWORDS:
    
     ascii=1
 
-    if ( False ):
-        if ( ext != 'qds' ):
-            raise Exception('internal error, extension should be qds')
+    if ext=='qds':
      
         if np==3:
             data= { 'x':xx, 'z':zz, 'tags':['x','z'] }
