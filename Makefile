@@ -1,10 +1,10 @@
 # To make a release, edit `version` keyword in setup.py and
 # modify make commands below accordingly. Then
+# echo "One must manually update the version in setup.py"
 #   git commit .
 #   make test PYTHON=python2.7
 #   make test PYTHON=python3.6
 #   make version-tag 
-#   echo "One must manually update the version in setup.py"
 #   make package 
 #   make release
 
