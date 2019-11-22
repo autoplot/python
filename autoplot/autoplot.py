@@ -139,8 +139,8 @@ def to_qdataset(X, Y=None, Z=None):
         return link(xds, yds, zds)
 
 
-def show_completetions( s ):
-    'show completions for the given URI.'
+def show_completions( s ):
+    'print completions for the given URI.'
     import jpype
     org= javaaddpath()
     sc= org.autoplot.ScriptContext
