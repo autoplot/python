@@ -3,13 +3,14 @@ from __future__ import print_function
 def printNoNewline(s):
     print(s, end=' ')
     
-def javaaddpath(url, jdwpPort=-1):
+def javaaddpath(url='', jdwpPort=-1):
     '''Start up JVM, import JAR at URL, and import the paths starting with org 
     into the Python namespace.
       com= jpype.JPackage('com') 
     can be used to the com package into the Python namespace.
     Example:
-      org = javaaddpath('http://autoplot.org/jnlp/devel/autoplot.jar')
+      org = javaaddpath('http://autoplot.org/devel/autoplot.jar')
+    if no url is provided, then the default http://autoplot.org/latest/autoplot.jar is used.
     '''
 
     import os
@@ -23,6 +24,9 @@ def javaaddpath(url, jdwpPort=-1):
     except ImportError:
         # Fall back to Python 2's urllib2
         from urllib2 import urlopen
+
+    if url=='':
+        url='http://autoplot.org/latest/autoplot.jar'
 
     file_name = url.split('/')[-1]
     u = urlopen(url)
@@ -134,6 +138,16 @@ def to_qdataset(X, Y=None, Z=None):
         zds = to_qdataset(Z)
         return link(xds, yds, zds)
 
+
+def show_completetions( s ):
+    'show completions for the given URI.'
+    import jpype
+    org= javaaddpath()
+    sc= org.autoplot.ScriptContext
+    xxs= sc.getCompletions( s )
+    for x in xxs:
+        print(x)
+    
 
 #def applot(X, Y=None, Z=None):
 #    'plot Python arrays or ndarrays in Autoplot'
@@ -458,7 +472,6 @@ def tryPortConnect( host, port ):
 def sendCommand( s, cmd ):
     s.send( bytes(cmd,'utf8') )
     print('done')
-
 
 def applot( x=None, y=None, z=None, z4=None, xunits='', ylabel='', tmpfile=None, noplot=0, respawn=0, delta_plus=None, delta_minus=None ):
     '''
