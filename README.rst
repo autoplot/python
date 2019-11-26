@@ -34,7 +34,7 @@ Install using `pip install autoplot`
 
   # Extract data values
   vv = to_ndarray(apds, 'data')
-  tt= to_ndarray(apds, 'dep0')
+  tt = to_ndarray(apds, 'dep0')
 
   from matplotlib import pyplot as plt
   plt.plot(tt,vv)
