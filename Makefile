@@ -1,6 +1,6 @@
 # To make a release, edit `version` keyword in setup.py and
 # modify make commands below accordingly. Then
-# echo "One must manually update the version in setup.py"
+#   echo "One must manually update the version in setup.py and in autoplot/__init__.py"
 #   git commit .
 #   make test PYTHON=python2.7
 #   make test PYTHON=python3.6
