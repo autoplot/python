@@ -1,5 +1,8 @@
 from __future__ import print_function
 
+def version():
+    return '0.3.9'
+
 def printNoNewline(s):
     print(s, end=' ')
     
@@ -161,7 +164,7 @@ def show_completions( s ):
 
 def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
 
-    print( 'writing das2stream to ' + filename )
+    print( 'writing das2stream to ' + filename + ' using ' + version() )
     import time
 
     streamHeader= [ '[00]xxxxxx<stream source="applot.pro" localDate="'+time.asctime()+'">', '</stream>' ]
@@ -288,10 +291,10 @@ def qstream(dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus=
     name = tags[-1]
     tname = tags[0]
 
-    print('writing qstream to ' + filename)
+    print('writing qstream to ' + filename + ' using ' + version() )
     import time
 
-    streamHeader = ['<stream dataset_id="'+name+'" source="applot.pro" localDate="'+time.asctime()+'">', '</stream>']
+    streamHeader = ['<stream dataset_id="'+name+'" source="autoplot.py" localDate="'+time.asctime()+'">', '</stream>']
     contentLength= 0
     for i in range(len(streamHeader)):
         contentLength += len( streamHeader[i] ) + 1
@@ -439,7 +442,7 @@ def qstream(dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus=
                 if hasattr(rec,'__len__'):
                     l = len(rec)
                     for k in range(l):
-                        #print( format[k] )
+                        print( format[k] )
                         s = format[k] % rec[k]
                         unit.write(bytes(s, 'utf8'))
                 else:
