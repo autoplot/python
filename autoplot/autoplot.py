@@ -304,7 +304,7 @@ def qstream(dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus=
     streamHeader[0] = x
 
     if ascii: 
-        xdatatype = 'ascii24'
+        xdatatype = 'ascii30'
     else: 
         xdatatype = 'double'
     if ascii: 
@@ -348,10 +348,10 @@ def qstream(dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus=
 
     totalItems = 1
 
-    format = ['%24.12f']
+    format = ['%30f']
     formats = {'x':format}
    
-    reclen = 4 + 24 + (nt-1) * 20
+    reclen = 4 + 30 + (nt-1) * 20
 
     i = 1
     for tag in tags[1:]:
@@ -432,6 +432,9 @@ def qstream(dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus=
     keys = dataStruct.keys()
 
     newline = False
+    #import pdb
+    #pdb.set_trace()
+     
     for i in range(nr):
         unit.write(bytes(':01:','utf8'))
         for j in range(nt):
@@ -554,7 +557,9 @@ KEYWORDS:
     ascii=1
 
     if ext=='qds':
-     
+        print('*****')
+        print( type( xx ) )
+        print( xunits )
         if np==3:
             data= { 'x':xx, 'z':zz, 'tags':['x','z'] }
             qstream( data, tmpfile, ytags=yy, xunits=xunits, ascii=ascii  )
