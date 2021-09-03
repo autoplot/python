@@ -21,7 +21,7 @@ setup(
     author='Jeremy Faden',
     author_email='faden@cottagesystems.com',
     packages=find_packages(), 
-    url='http://pypi.python.org/pypi/autoplot',
+    url='https://github.com/autoplot/python/',
     license='LICENSE.txt',
     description='Interface to Autoplot Java library',
     long_description=open('README.rst').read(),
