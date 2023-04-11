@@ -1,20 +1,23 @@
 from __future__ import print_function
 
+
 def version():
-    return '0.3.9'
+    return '0.4.1'
+
 
 def printNoNewline(s):
     print(s, end=' ')
-    
+
+
 def javaaddpath(url='', jdwpPort=-1):
-    '''Start up JVM, import JAR at URL, and import the paths starting with org 
+    """Start up JVM, import JAR at URL, and import the paths starting with org
     into the Python namespace.
       com= jpype.JPackage('com') 
     can be used to the com package into the Python namespace.
     Example:
-      org = javaaddpath('http://autoplot.org/devel/autoplot.jar')
+      javaaddpath('http://autoplot.org/devel/autoplot.jar')
     if no url is provided, then the default http://autoplot.org/latest/autoplot.jar is used.
-    '''
+    """
 
     import os
     import jpype
@@ -82,17 +85,22 @@ def javaaddpath(url='', jdwpPort=-1):
     else:
         print('Java is already running.')
 
-    return jpype.JPackage("org")
+
+def new_data_source():
+    """create a new container for loading data"""
+    import jpype
+    clas = jpype.JClass("org.autoplot.idlsupport.APDataSet")
+    return clas()
 
 
 def to_ndarray(apds, name):
-    'extract the data identified by name to numpy array, using datetime64 for times.'
+    """extract the data identified by name to numpy array, using datetime64 for times."""
     import numpy as np
     import jpype
-    org = jpype.JPackage('org')
+    Units = jpype.JClass('org.das2.datum.Units')
     apds.setPreferredUnits('microseconds since 2000-01-01T00:00')
-    u = org.das2.datum.Units.lookupUnits(apds.propertyAsString(name, 'UNITS'))
-    if u.isConvertibleTo(org.das2.datum.Units.us2000):
+    u = Units.lookupUnits(apds.propertyAsString(name, 'UNITS'))
+    if u.isConvertibleTo(Units.us2000):
         g_base = np.datetime64('2000-01-01T00:00:00Z')
         dd = apds.values(name)
         result = np.array([g_base + np.timedelta64(int(dd[i]*1000), 'ns') for i in range(len(dd))])
@@ -103,15 +111,15 @@ def to_ndarray(apds, name):
 
 
 def to_qdataset(X, Y=None, Z=None):
-    '''convert the ndarrays or array like objects to Autoplot QDataSet objects.
-    datetime64 are handled by converting to QDataSet with Units.us2000'''
+    """convert the ndarrays or array like objects to Autoplot QDataSet objects.
+    datetime64 are handled by converting to QDataSet with Units.us2000"""
     import jpype
     if not jpype.isJVMStarted():
         raise Exception('Java is not running, use javaaddpath')
-    org = jpype.JPackage('org')
-    dataset = org.das2.qds.ops.Ops.dataset
-    link = org.das2.qds.ops.Ops.link
-    transpose = org.das2.qds.ops.Ops.transpose
+    Ops = jpype.JClass('org.das2.qds.ops.Ops')
+    dataset = Ops.dataset
+    link = Ops.link
+    transpose = Ops.transpose
     import numpy as np
 
     if Y is None and Z is None:
@@ -145,9 +153,8 @@ def to_qdataset(X, Y=None, Z=None):
 def show_completions( s ):
     'print completions for the given URI.'
     import jpype
-    org= javaaddpath()
-    sc= org.autoplot.ScriptContext
-    xxs= sc.getCompletions( s )
+    sc = jpype.JClass('org.autoplot.ScriptContext')
+    xxs = sc.getCompletions(s)
     for x in xxs:
         print(x)
     
@@ -163,27 +170,27 @@ def show_completions( s ):
 #    sc.plot(ds)
 
 def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
-
+    """Write the python data structure to a das2stream"""
     print( 'writing das2stream to ' + filename + ' using ' + version() )
     import time
 
-    streamHeader= [ '[00]xxxxxx<stream source="applot.pro" localDate="'+time.asctime()+'">', '</stream>' ]
-    contentLength= -10  # don't include the packet tag and content length
+    streamHeader = ['[00]xxxxxx<stream source="applot.pro" localDate="'+time.asctime()+'">', '</stream>']
+    contentLength = -10  # don't include the packet tag and content length
     for i in range( len( streamHeader ) ):
         contentLength += len( streamHeader[i] ) + 1
 
     x= streamHeader[0]
     x= '[00]' + '%06d' % contentLength + x[10:]
-    streamHeader[0]= x
+    streamHeader[0] = x
 
     if ascii:
-         xdatatype= 'ascii24'
+        xdatatype = 'ascii24'
     else:
-         xdatatype= 'sun_real8'
+        xdatatype = 'sun_real8'
     if ascii:
-         datatype= 'ascii16'
+        datatype = 'ascii16'
     else:
-         datatype='sun_real8'
+        datatype = 'sun_real8'
 
     packetDescriptor= [ '[01]xxxxxx<packet>' ]
     tags= dataStruct['tags']
@@ -192,9 +199,9 @@ def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
 
     totalItems=1
 
-    format=['%24.12f']
-    reclen= 4 + 24 + (nt-1) * 20
-    i=0
+    format = ['%24.12f']
+    reclen = 4 + 24 + (nt-1) * 20
+    i = 0
     for tag in tags:
         d= dataStruct[tag]
         if ( i==0 ):
@@ -208,26 +215,29 @@ def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
         elif ( hasattr( d, "shape") ):  # check for numpy
             rank= len(d.shape)
 
-        if ( rank==1 ):
+        if (rank==1):
             packetDescriptor.append( '   <y type="'+datatype+'" name="'+name+'" units="" idlname="'+tags[i]+'" />' )
 
-            if ( i<nt-1 ): format.append('%16.4e')
-            else: format.append( '%15.3e' )
+            if (i<nt-1):
+                format.append('%16.4e')
+            else:
+                format.append('%15.3e')
             totalItems= totalItems + 1
         else:
-            if ytags==None: ytags= range(s[2])
-            sytags= ','.join( [ "%f"%n for n in ytags ] )
-            nitems= len(ytags)
+            if ytags==None:
+                ytags= range(s[2])
+            sytags = ','.join( [ "%f"%n for n in ytags ] )
+            nitems = len(ytags)
             packetDescriptor.append( '   <yscan type="' +datatype+'" name="' +name +'" units="" nitems="'+str(nitems) +'" yTags="'+sytags+'"' +' />' )
  
             for i in range(1,nitems):
                 format.append('%16.4e')
-            if ( i<nt-1 ):
+            if (i<nt-1):
                 format.append('%16.4e')
             else:
                 format.append('%15.4e')
-            totalItems+= nitems
-        i=i+1;
+            totalItems += nitems
+        i = i+1
 
     packetDescriptor.append( '</packet>' )
 
@@ -285,7 +295,7 @@ def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
 
 
 def qstream(dataStruct, filename, ytags=None, ascii=True, xunits='', delta_plus=None, delta_minus=None):
-    """for rank 2, ytags must be specified ascii, boolean, use ascii transfer types"""
+    """Write the data to a qstream.  for rank 2, ytags must be specified ASCII, boolean, use ASCII transfer types"""
     tags = dataStruct['tags']
     nt = len(tags)
     name = tags[-1]
@@ -480,7 +490,7 @@ def sendCommand( s, cmd ):
     print('done')
 
 def applot( x=None, y=None, z=None, z4=None, xunits='', ylabel='', tmpfile=None, noplot=0, respawn=0, delta_plus=None, delta_minus=None ):
-    '''
+    """
 NAME:
     plot
 PURPOSE:
@@ -500,7 +510,7 @@ KEYWORDS:
    ylabel=''    label is currently ignored.
    delta_plus=  array of positive lengths showing the upper limit of the 1-sigma confidence interval.
    delta_minus= array of positive lengths showing the lower limit of the 1-sigma confidence interval.
-'''
+"""
 
     port= 12345
 
