@@ -16,10 +16,10 @@ Install using `pip install autoplot`
   from autoplot import *
 
   # Download autoplot.jar if needed and return Python bridge object
-  org = javaaddpath('http://autoplot.org/latest/autoplot.jar')
-
+  javaaddpath('http://autoplot.org/latest/autoplot.jar')
+  
   # Create Autoplot Data Set
-  apds = org.autoplot.idlsupport.APDataSet()
+  apds = new_data_source()
 
   # Set URI
   apds.setDataSetURI('http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0')
