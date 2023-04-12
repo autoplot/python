@@ -86,7 +86,7 @@ def javaaddpath(url='', jdwpPort=-1):
         print('Java is already running.')
 
 
-def new_data_source():
+def APDataSet():
     """create a new container for loading data"""
     import jpype
     clas = jpype.JClass("org.autoplot.idlsupport.APDataSet")
