@@ -19,7 +19,7 @@ Install using `pip install autoplot`
   javaaddpath('http://autoplot.org/latest/autoplot.jar')
   
   # Create Autoplot Data Set
-  apds = new_data_source()
+  apds = APDataSet()
 
   # Set URI
   apds.setDataSetURI('http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0')
