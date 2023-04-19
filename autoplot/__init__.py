@@ -4,5 +4,5 @@ from autoplot.autoplot import applot
 from autoplot.autoplot import to_qdataset
 from autoplot.autoplot import to_ndarray
 from autoplot.autoplot import show_completions
-__version__='0.4.1'
+__version__='0.5'
 

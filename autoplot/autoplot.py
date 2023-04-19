@@ -485,6 +485,21 @@ def tryPortConnect( host, port ):
     s.close()
 
 
+def load( uri ):
+    """tell Autoplot to load a .vap or plot an Autoplot URI.  Autoplot must be running and its optional server must be listening 
+on port 12345."""
+    port= 12345
+
+    import socket
+    s = socket.socket()
+    s.connect(('localhost',port))
+
+    cmd= "load( \'"+uri+"\')\n"
+
+    foo= sendCommand( s, cmd )
+    s.shutdown(1)
+    s.close()
+
 def sendCommand( s, cmd ):
     s.send( bytes(cmd,'utf8') )
     print('done')
