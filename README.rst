@@ -44,3 +44,4 @@ Contact
 -------------------------------
 Jeremy Faden <faden@cottagesystems.com>
 
+See also https://github.com/autoplot/python/wiki
