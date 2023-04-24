@@ -2,7 +2,7 @@ from __future__ import print_function
 
 
 def version():
-    return '0.6.1'
+    return '0.6.2'
 
 
 def printNoNewline(s):
@@ -10,8 +10,7 @@ def printNoNewline(s):
 
 
 def javaaddpath(url='', jdwpPort=-1):
-    """Start up JVM, import JAR at URL, and import the paths starting with org
-    into the Python namespace.
+    """Start up JVM, import JAR at URL.
       com= jpype.JPackage('com') 
     can be used to the com package into the Python namespace.
     Example:
