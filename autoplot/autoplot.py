@@ -2,7 +2,7 @@ from __future__ import print_function
 
 
 def version():
-    return '0.5.2'
+    return '0.5.3'
 
 
 def printNoNewline(s):
@@ -93,10 +93,13 @@ def APDataSet():
     return clas()
 
 
-def to_ndarray(apds, name):
-    """extract the data identified by name to numpy array, using datetime64 for times."""
+def to_ndarray(apds, name=None):
+    """extract the data identified by name to numpy array, using datetime64 for times.  If name is empty or not specified, then
+    the default dataset is returned."""
     import numpy as np
     import jpype
+    if name==None:
+        name= apds.name()
     Units = jpype.JClass('org.das2.datum.Units')
     apds.setPreferredUnits('microseconds since 2000-01-01T00:00')
     u = Units.lookupUnits(apds.propertyAsString(name, 'UNITS'))
@@ -151,7 +154,7 @@ def to_qdataset(X, Y=None, Z=None):
 
 
 def show_completions( s ):
-    'print completions for the given URI.'
+    "print completions for the given URI."
     import jpype
     sc = jpype.JClass('org.autoplot.ScriptContext')
     xxs = sc.getCompletions(s)
