@@ -13,7 +13,7 @@ def test_APDataSet():
     assert apds is not None
 
 def test_doGetDataSet():
-    javaaddpath('http://autoplot.org/jnlp/latest/autoplot.jar')
+    ap.javaaddpath('http://autoplot.org/jnlp/latest/autoplot.jar')
     apds = ap.APDataSet()
     apds.setDataSetURI('http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0')
     apds.doGetDataSet()
