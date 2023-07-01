@@ -44,7 +44,7 @@ Install using `pip install autoplot`
 Changes are Coming
 ------------------
 Over the past few years, Python and the JPype interface have changed and some examples no longer work.  The interface
-was based on IDL and Matlab use, and a more precisely tuned interface for the Python community is needed.  This work should be done in 2023.
+was based on IDL and Matlab use, and a more precisely tuned interface for the Python community is needed.  (For example addjavapath is a Matlab command and is strange to Python programmers.)  This work should be done in 2023.  See https://github.com/autoplot/python/wiki/python_reset.
 
 Contact
 -------------------------------
