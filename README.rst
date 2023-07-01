@@ -41,6 +41,11 @@ Install using `pip install autoplot`
   plt.plot(tt,vv)
   plt.show()
 
+Changes are Coming
+------------------
+Over the past few years, Python and the JPype interface have changed and some examples no longer work.  The interface
+was based on IDL and Matlab use, and a more precisely tuned interface for the Python community is needed.  This work should be done in 2023.
+
 Contact
 -------------------------------
 Jeremy Faden <faden@cottagesystems.com>
