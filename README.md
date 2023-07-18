@@ -20,32 +20,32 @@ Once the package is installed, in Python Autoplot is now accessible.
 
 ```python
 
-  from autoplot import *
+from autoplot import *
 
-  # Download autoplot.jar, if needed, and load it into JPype's classpath.
-  javaaddpath('http://autoplot.org/latest/autoplot.jar')
-  
-  # Create Autoplot Data Set, which is an object that loads and temporarily holds data.
-  apds = APDataSet()
+# Download autoplot.jar, if needed, and load it into JPype's classpath.
+javaaddpath('http://autoplot.org/latest/autoplot.jar')
 
-  # Set URI which will be loaded.
-  apds.setDataSetURI('http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0')
+# Create Autoplot Data Set, which is an object that loads and temporarily holds data.
+apds = APDataSet()
 
-  # Load the data, initially downloading files into Autoplot's cache.
-  apds.doGetDataSet()
+# Set URI which will be loaded.
+apds.setDataSetURI('http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0')
 
-  print(apds.toString())
-  # http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0
-  # data: data[dep0=288] (dimensionless)
-  # dep0: dep0[288] (days since 1899-12-30T00:00:00.000Z) (DEPEND_0)
+# Load the data, initially downloading files into Autoplot's cache.
+apds.doGetDataSet()
 
-  # Extract data values
-  vv = to_ndarray(apds)
-  tt = to_ndarray(apds, 'dep0')
+print(apds.toString())
+# http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0
+# data: data[dep0=288] (dimensionless)
+# dep0: dep0[288] (days since 1899-12-30T00:00:00.000Z) (DEPEND_0)
 
-  from matplotlib import pyplot as plt
-  plt.plot(tt,vv)
-  plt.show()
+# Extract data values
+vv = to_ndarray(apds)
+tt = to_ndarray(apds, 'dep0')
+
+from matplotlib import pyplot as plt
+plt.plot(tt,vv)
+plt.show()
 ```
 
 # Changes are Coming
