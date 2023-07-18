@@ -7,16 +7,18 @@ These URIs can be created using the Autoplot application, available at http://au
 Data are read into a standard data model, QDataSet, which is easily adapted to Python using "JPype".
 Helper procedures from the Autoplot package convert QDataSets into ndarrays.
 
-Autoplot/Python Interface Tools
--------------------------------
+# Autoplot/Python Interface Tools
 
 The Autoplot/Python package is loaded using pip:
-```
+
+```sh-session
 unix> pip install autoplot
 ```
+
+
 Once the package is installed, in Python Autoplot is now accessible.
 
-.. code:: python
+```python
 
   from autoplot import *
 
@@ -44,14 +46,13 @@ Once the package is installed, in Python Autoplot is now accessible.
   from matplotlib import pyplot as plt
   plt.plot(tt,vv)
   plt.show()
+```
 
-Changes are Coming
-------------------
+# Changes are Coming
 Over the past few years, Python and the JPype interface have changed and some examples no longer work.  The interface
 was based on IDL and Matlab use, and a more precisely tuned interface for the Python community is needed.  (For example addjavapath is a Matlab command and is strange to Python programmers.)  This work should be done in 2023.  See https://github.com/autoplot/python/wiki/python_reset.
 
-Contact
--------------------------------
+# Contact
 Jeremy Faden <faden@cottagesystems.com>
 
 See also https://github.com/autoplot/python/wiki
