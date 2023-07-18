@@ -12,7 +12,7 @@ Helper procedures from the Autoplot package convert QDataSets into ndarrays.
 The Autoplot/Python package is loaded using pip:
 
 ```sh-session
-unix> pip install autoplot
+> pip install autoplot
 ```
 
 
