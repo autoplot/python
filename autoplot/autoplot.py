@@ -9,6 +9,38 @@ def printNoNewline(s):
     print(s, end=' ')
 
 
+def init(url='', jdwpPort=-1):
+    """Start up JVM, import JAR at URL.
+      com= jpype.JPackage('com') 
+    can be used to the com package into the Python namespace.
+    Example:
+      javaaddpath('http://autoplot.org/devel/autoplot.jar')
+    if no url is provided, then the default http://autoplot.org/latest/autoplot.jar is used.
+    """
+    javaaddpath(url='', jdwpPort=jdwpPort)
+
+def handleShutdown():
+    'shutdown hook which shuts down the JVM.'
+    print( 'shut down JVM...' )
+    import jpype
+    System=jpype.JClass('java.lang.System')
+    System.exit(-15)
+    
+def start():
+    """start up the JVM and launch Autoplot.  This also disables Java's system.exit, which also shuts down Python."""
+    #javaaddpath(url='https://ci-pw.physics.uiowa.edu/job/autoplot-release-2022/lastSuccessfulBuild/artifact/autoplot/Autoplot/dist/autoplot.jar')
+    javaaddpath()
+    import jpype
+    AppManager=jpype.JClass('org.autoplot.AppManager')    
+    AppManager.getInstance().setAllowExit(False)
+    AutoplotUI=jpype.JClass('org.autoplot.AutoplotUI')
+    AutoplotUI.main([])
+    import atexit
+    atexit.register(handleShutdown)
+    import time
+    time.sleep(5)
+
+    
 def javaaddpath(url='', jdwpPort=-1):
     """Start up JVM, import JAR at URL.
       com= jpype.JPackage('com') 
