@@ -10,7 +10,11 @@ Helper procedures from the Autoplot package convert QDataSets into ndarrays.
 Autoplot/Python Interface Tools
 -------------------------------
 
-Install using `pip install autoplot`
+The Autoplot/Python package is loaded using pip:
+```
+unix> pip install autoplot
+```
+Once the package is installed, in Python Autoplot is now accessible.
 
 .. code:: python
 
