@@ -7,7 +7,7 @@ To make a release:
 4. make version-tag
 5. make package
 6. make release
-
+   1. enter pypi password.
 
 # Notes
 ## 2023-07-19
