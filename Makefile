@@ -9,8 +9,8 @@
 #   make release
 
 SHELL:= /bin/bash
-VERSION=0.7.0
-PYTHONV=3.6
+VERSION=0.7.1
+PYTHONV=3.8
 PYTHON=python$(PYTHONV)
 URL=https://upload.pypi.org/
 

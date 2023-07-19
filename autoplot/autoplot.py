@@ -2,7 +2,7 @@ from __future__ import print_function
 
 
 def version():
-    return '0.6.2'
+    return '0.7.1'
 
 
 def printNoNewline(s):
