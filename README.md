@@ -4,7 +4,7 @@ Plasma Wave Group at the University of Iowa, and servers supporting the HAPI API
 
 Autoplot identifies data using "URIs", which are one-line strings containing a data source ID and configuration to read the data.  
 These URIs can be created using the Autoplot application, available at http://autoplot.org/.
-Data are read into a standard data model, QDataSet, which is easily adapted to Python using "JPype".
+Data are read into a standard data model, QDataSet, which is easily adapted to Python using the JPype library.
 Helper procedures from the Autoplot package convert QDataSets into ndarrays.
 
 # Autoplot/Python Interface Tools
