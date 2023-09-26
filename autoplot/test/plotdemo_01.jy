@@ -1,0 +1,6 @@
+import autoplot
+autoplot.start()  # initializes GUI
+
+autoplot.plot( np.random.gumbel( size=200000 ) )
+
+
