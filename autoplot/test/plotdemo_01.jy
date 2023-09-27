@@ -1,6 +1,6 @@
-import autoplot
-autoplot.start()  # initializes GUI
+import autoplot as ap
+ap.start()  # initializes GUI
 
-autoplot.plot( np.random.gumbel( size=200000 ) )
+ap.plot( np.random.gumbel( size=200000 ) )
 
 
