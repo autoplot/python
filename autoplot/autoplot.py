@@ -2,7 +2,7 @@ from __future__ import print_function
 
 
 def version():
-    return '0.7.1'
+    return '0.7.2'
 
 
 def printNoNewline(s):
@@ -26,10 +26,14 @@ def handleShutdown():
     System=jpype.JClass('java.lang.System')
     System.exit(-15)
     
-def start():
+def start(vers='latest'):
     """start up the JVM and launch Autoplot.  This also disables Java's system.exit, which also shuts down Python."""
     #javaaddpath(url='https://ci-pw.physics.uiowa.edu/job/autoplot-release-2022/lastSuccessfulBuild/artifact/autoplot/Autoplot/dist/autoplot.jar')
-    javaaddpath()
+    import re    
+    if not re.match('[a-zA-Z_0-9]+',vers):
+        raise Exception('version must match [a-zA-Z_0-9]+, (latest, devel, v2023a_8, etc)')
+    javaaddpath(url='http://autoplot.org/jnlp/'+vers+'/autoplot.jar')
+
     import jpype
     AppManager=jpype.JClass('org.autoplot.AppManager')    
     AppManager.getInstance().setAllowExit(False)
@@ -157,7 +161,7 @@ def to_qdataset(X, Y=None, Z=None):
     import numpy as np
 
     if Y is None and Z is None:
-        if isinstance(X, jpype.JavaObject):
+        if False:
             xds = X  # assume it's a QDataSet already
         else:
             if not hasattr(X, 'dtype'):
@@ -192,16 +196,15 @@ def show_completions( s ):
     for x in xxs:
         print(x)
     
-
-#def applot(X, Y=None, Z=None):
-#    'plot Python arrays or ndarrays in Autoplot'
-#    import jpype
-#    if not jpype.isJVMStarted():
-#        raise Exception('Java is not running, use javaaddpath')
-#    ds = to_qdataset(X, Y, Z)
-#    org = jpype.JPackage('org')
-#    sc = org.autoplot.ScriptContext
-#    sc.plot(ds)
+def plot( X, Y=None, Z=None):
+    """Plot to a running Autoplot"""
+    import jpype
+    if not jpype.isJVMStarted():
+        raise Exception('Java is not running, use javaaddpath')
+    ds = to_qdataset(X, Y, Z)
+    org = jpype.JPackage('org')
+    sc = jpype.JClass('org.autoplot.ScriptContext')
+    sc.plot(ds)
 
 def das2stream( dataStruct, filename, ytags=None, ascii=1, xunits='' ):
     """Write the python data structure to a das2stream"""
