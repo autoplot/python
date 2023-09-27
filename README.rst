@@ -13,13 +13,13 @@ Install using `pip install autoplot`
 
 .. code:: python
 
-  from autoplot import *
+  import autoplot as ap
 
   # Download autoplot.jar if needed and return Python bridge object
-  org = javaaddpath('http://autoplot.org/latest/autoplot.jar')
+  ap.init()
 
-  # Create Autoplot Data Set
-  apds = org.autoplot.idlsupport.APDataSet()
+  # Create Autoplot Data Set.  This object manages loading the data and then containing it until extracted.
+  apds = ap.APDataSet()
 
   # Set URI
   apds.setDataSetURI('http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0')
@@ -33,8 +33,8 @@ Install using `pip install autoplot`
   # dep0: dep0[288] (days since 1899-12-30T00:00:00.000Z) (DEPEND_0)
 
   # Extract data values
-  vv = to_ndarray(apds, 'data')
-  tt = to_ndarray(apds, 'dep0')
+  vv = ap.to_ndarray(apds, 'data')
+  tt = ap.to_ndarray(apds, 'dep0')
 
   from matplotlib import pyplot as plt
   plt.plot(tt,vv)

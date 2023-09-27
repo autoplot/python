@@ -20,18 +20,18 @@ Once the package is installed, in Python Autoplot is now accessible.
 
 ```python
 
-from autoplot import *
+import autoplot as ap
 
-# Download autoplot.jar, if needed, and load it into JPype's classpath.
-javaaddpath('http://autoplot.org/latest/autoplot.jar')
+# Download autoplot.jar if needed and return Python bridge object
+ap.init()
 
-# Create Autoplot Data Set, which is an object that loads and temporarily holds data.
-apds = APDataSet()
+# Create Autoplot Data Set.  This object manages loading the data and then containing it until extracted.
+apds = ap.APDataSet()
 
-# Set URI which will be loaded.
+# Set URI
 apds.setDataSetURI('http://autoplot.org/data/swe-np.xls?column=data&depend0=dep0')
 
-# Load the data, initially downloading files into Autoplot's cache.
+# Get the data
 apds.doGetDataSet()
 
 print(apds.toString())
@@ -40,8 +40,8 @@ print(apds.toString())
 # dep0: dep0[288] (days since 1899-12-30T00:00:00.000Z) (DEPEND_0)
 
 # Extract data values
-vv = to_ndarray(apds)
-tt = to_ndarray(apds, 'dep0')
+vv = ap.to_ndarray(apds, 'data')
+tt = ap.to_ndarray(apds, 'dep0')
 
 from matplotlib import pyplot as plt
 plt.plot(tt,vv)
