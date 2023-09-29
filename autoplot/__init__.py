@@ -8,4 +8,4 @@ from autoplot.autoplot import plot
 from autoplot.autoplot import to_qdataset
 from autoplot.autoplot import to_ndarray
 from autoplot.autoplot import show_completions
-__version__='0.8'
+__version__='0.8.1'
