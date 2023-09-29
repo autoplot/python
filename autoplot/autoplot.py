@@ -2,7 +2,7 @@ from __future__ import print_function
 
 
 def version():
-    return '0.7.2'
+    return '0.8.1'
 
 
 def printNoNewline(s):
@@ -158,9 +158,6 @@ def to_qdataset(X, Y=None, Z=None):
     Ops = jpype.JClass('org.das2.qds.ops.Ops')
     QDataSet = jpype.JClass('org.das2.qds.QDataSet')
     Units= jpype.JClass('org.das2.datum.Units')
-    dataset = Ops.dataset
-    link = Ops.link
-    transpose = Ops.transpose
     import numpy as np
     import datetime
 
@@ -176,23 +173,23 @@ def to_qdataset(X, Y=None, Z=None):
             if (str(X.dtype).startswith('datetime64') or str(X.dtype).startswith('<M8')):
                 g_base = np.datetime64('2000-01-01T00:00:00Z')
                 X = (X - g_base) / np.timedelta64(1000, 'ns')
-                xds = dataset(jpype.JArray(jpype.JDouble, X.ndim)(X.tolist()))
+                xds = Ops.dataset(jpype.JArray(jpype.JDouble, X.ndim)(X.tolist()))
 
                 xds.putProperty(QDataSet.UNITS,Units.us2000)
             else:
-                xds = dataset(jpype.JArray(jpype.JDouble, X.ndim)(X.tolist()))
+                xds = Ops.dataset(jpype.JArray(jpype.JDouble, X.ndim)(X.tolist()))
             if xds.rank() == 2:
-                xds = transpose(xds)
+                xds = Ops.transpose(xds)
         return xds
     elif Z is None:
         xds = to_qdataset(X)
         yds = to_qdataset(Y)
-        return link(xds, yds)
+        return Ops.link(xds, yds)
     else:
         xds = to_qdataset(X)
         yds = to_qdataset(Y)
         zds = to_qdataset(Z)
-        return link(xds, yds, zds)
+        return Ops.link(xds, yds, zds)
 
 
 def show_completions( s ):
