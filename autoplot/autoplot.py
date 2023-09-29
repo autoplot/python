@@ -26,7 +26,7 @@ def handleShutdown():
     System=jpype.JClass('java.lang.System')
     System.exit(-15)
     
-def start(vers='latest'):
+def start(vers='latest',noexit=False):
     """start up the JVM and launch Autoplot.  This also disables Java's system.exit, which also shuts down Python."""
     #javaaddpath(url='https://ci-pw.physics.uiowa.edu/job/autoplot-release-2022/lastSuccessfulBuild/artifact/autoplot/Autoplot/dist/autoplot.jar')
     import re    
@@ -39,10 +39,11 @@ def start(vers='latest'):
     AppManager.getInstance().setAllowExit(False)
     AutoplotUI=jpype.JClass('org.autoplot.AutoplotUI')
     AutoplotUI.main([])
-    import atexit
-    atexit.register(handleShutdown)
-    import time
-    time.sleep(5)
+    if not noexit:
+        import atexit
+        atexit.register(handleShutdown)
+    #import time
+    #time.sleep(5)
 
     
 def javaaddpath(url='', jdwpPort=-1):
@@ -155,23 +156,29 @@ def to_qdataset(X, Y=None, Z=None):
     if not jpype.isJVMStarted():
         raise Exception('Java is not running, use javaaddpath')
     Ops = jpype.JClass('org.das2.qds.ops.Ops')
+    QDataSet = jpype.JClass('org.das2.qds.QDataSet')
+    Units= jpype.JClass('org.das2.datum.Units')
     dataset = Ops.dataset
     link = Ops.link
     transpose = Ops.transpose
     import numpy as np
+    import datetime
 
     if Y is None and Z is None:
-        if False:
+        if isinstance( X,jpype.JObject ):
             xds = X  # assume it's a QDataSet already
         else:
+            if isinstance(X,list):
+                if isinstance(X[0],datetime.datetime):
+                    X= np.array(X, dtype="datetime64[us]")
             if not hasattr(X, 'dtype'):
                 X = np.array(X)
             if (str(X.dtype).startswith('datetime64') or str(X.dtype).startswith('<M8')):
                 g_base = np.datetime64('2000-01-01T00:00:00Z')
                 X = (X - g_base) / np.timedelta64(1000, 'ns')
                 xds = dataset(jpype.JArray(jpype.JDouble, X.ndim)(X.tolist()))
-                xds.putProperty(org.das2.qds.QDataSet.UNITS,
-                                org.das2.datum.Units.us2000)
+
+                xds.putProperty(QDataSet.UNITS,Units.us2000)
             else:
                 xds = dataset(jpype.JArray(jpype.JDouble, X.ndim)(X.tolist()))
             if xds.rank() == 2:
@@ -202,7 +209,6 @@ def plot( X, Y=None, Z=None):
     if not jpype.isJVMStarted():
         raise Exception('Java is not running, use javaaddpath')
     ds = to_qdataset(X, Y, Z)
-    org = jpype.JPackage('org')
     sc = jpype.JClass('org.autoplot.ScriptContext')
     sc.plot(ds)
 
