@@ -16,3 +16,4 @@ build
 
 /nbproject/
 /.ropeproject/
+/autoplot/test/__pycache__/
