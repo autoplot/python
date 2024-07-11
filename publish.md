@@ -15,3 +15,6 @@ I was not able to get the commands at the top of the makefile to work with Pytho
 
 I think I successfully did the pypi release (https://pypi.org/project/autoplot/), but it's not updating my machine when I do a 
 "pip install autoplot".  I keep getting the old version.  Same thing is happening on Windows.
+
+## 2023-07-11
+I always forget that every new routine added to autoplot.py must be copied to 'the above' name space in __init__.py.
