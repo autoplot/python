@@ -161,6 +161,24 @@ def to_qdataset(X, Y=None, Z=None):
     import numpy as np
     import datetime
 
+    if not X is None and isinstance( X,jpype.JObject ):
+        if X.getClass().getTypeName() == 'org.autoplot.idlsupport.APDataSet':
+            if X.depend(1)!='':
+                Z= X.values()
+                Y= X.values(X.depend(1))
+                X= X.values(X.depend(0))
+            if X.depend(0)!='':
+                Y= X.values()
+                X = X.values(X.depend(0))
+
+    if not Y is None and isinstance( Y,jpype.JObject ):
+        if Y.getClass().getTypeName() == 'org.autoplot.idlsupport.APDataSet':
+            Y= Y.values()
+
+    if not Z is None and isinstance( Z,jpype.JObject ):
+        if Z.getClass().getTypeName() == 'org.autoplot.idlsupport.APDataSet':
+            Z= Z.values()
+
     if Y is None and Z is None:
         if isinstance( X,jpype.JObject ):
             xds = X  # assume it's a QDataSet already
@@ -191,6 +209,17 @@ def to_qdataset(X, Y=None, Z=None):
         zds = to_qdataset(Z)
         return Ops.link(xds, yds, zds)
 
+def getDataSet( uri, monitor=None ):
+    apds = APDataSet()
+    apds.setDataSetURI(uri)
+    apds.doGetDataSet(monitor=monitor)
+    return apds
+
+def formatDataSet( ds, path ):
+    import jpype
+    ds = to_qdataset(ds)
+    sc = jpype.JClass('org.autoplot.ScriptContext')
+    sc.formatDataSet(ds,path)
 
 def show_completions( s ):
     "print completions for the given URI."
@@ -686,3 +715,9 @@ KEYWORDS:
     else:
         raise Exception( 'error encountered!' )
       
+if __name__ == "__main__":
+    import autoplot as ap
+    ap.init()
+    apds = ap.getDataSet('vap+jyds:https://jfaden.net/~jbf/autoplot/data/kmz/Jul_8,_2024_12_58_54_PM.kmz/doc.kml?speed&script=https://github.com/autoplot/dev/blob/master/demos/formats/kml/tracksKML.jyds')
+    ap.formatDataSet(apds,'/home/jbf/tmp/foo.qds')
+    print('see /home/jbf/tmp/foo.qds')
