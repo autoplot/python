@@ -52,6 +52,12 @@ plt.show()
 Over the past few years, Python and the JPype interface have changed and some examples no longer work.  The interface
 was based on IDL and Matlab use, and a more precisely tuned interface for the Python community is needed.  (For example addjavapath is a Matlab command and is strange to Python programmers.)  This work should be done in 2023.  See https://github.com/autoplot/python/wiki/python_reset.
 
+For example, to reformat a remote HDF file to a local ASCII file in Python:
+```
+import autoplot as ap
+data=ap.getDataSet('http://autoplot.org/autoplot/data/AMSR_E_L3_SeaIce6km_B06_20070307.hdf?SpPolarGrid06km/Data_Fields/SI_06km_SH_89H_ASC')
+ap.formatDataSet(data,'file:/tmp/ap/SeaIce6km.txt')
+```
 # Contact
 Jeremy Faden <faden@cottagesystems.com>
 
