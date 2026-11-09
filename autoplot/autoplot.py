@@ -2,12 +2,137 @@ from __future__ import print_function
 
 
 def version():
-    return "0.8.1"
+    return "0.9.5"
 
 
 def printNoNewline(s):
     print(s, end=" ")
 
+
+
+def _find_jvm(java_home):
+    """Locate the JVM native library within a Java installation."""
+    import os
+    import sys
+
+    if sys.platform == "win32":
+        paths = [
+            "bin/server/jvm.dll",
+            "jre/bin/server/jvm.dll",
+        ]
+    elif sys.platform == "darwin":
+        paths = [
+            "lib/server/libjvm.dylib",
+            "Contents/Home/lib/server/libjvm.dylib",
+            "jre/lib/server/libjvm.dylib",
+        ]
+    else:
+        paths = [
+            "lib/server/libjvm.so",
+            "jre/lib/amd64/server/libjvm.so",
+            "jre/lib/aarch64/server/libjvm.so",
+        ]
+
+    for relative in paths:
+        path = os.path.join(java_home, relative)
+        if os.path.isfile(path):
+            return os.path.abspath(path)
+
+    raise RuntimeError(
+        "Cannot locate JVM library in " + java_home
+    )
+
+
+def _test_jvm(jvm_path, timeout=30):
+    """
+    Test a JVM in a separate Python process.
+
+    Returns (success, diagnostic).
+    A native crash cannot terminate the calling process.
+    """
+    import os
+    import subprocess
+    import sys
+
+    script = """
+import jpype
+import sys
+
+jpype.startJVM(sys.argv[1])
+System = jpype.JClass("java.lang.System")
+print("Java version:", System.getProperty("java.version"))
+print("Java architecture:", System.getProperty("os.arch"))
+jpype.shutdownJVM()
+"""
+
+    env = os.environ.copy()
+    env.pop("PYTHONFAULTHANDLER", None)
+
+    try:
+        p = subprocess.run(
+            [sys.executable, "-c", script, jvm_path],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout,
+            env=env,
+            universal_newlines=True
+        )
+    except subprocess.TimeoutExpired:
+        return False, "JVM startup timed out"
+    except OSError as ex:
+        return False, str(ex)
+
+    output = p.stdout + p.stderr
+
+    if p.returncode != 0:
+        return False, (
+            "JVM test exited with code %d\n%s"
+            % (p.returncode, output)
+        )
+
+    return True, output
+
+
+def _get_working_jvm():
+    """
+    Find a working JVM, installing JDK 17 if necessary.
+
+    Returns the absolute path to its native JVM library.
+    """
+    import jpype
+
+    try:
+        candidate = jpype.getDefaultJVMPath()
+    except Exception as ex:
+        print("No default JVM:", ex)
+        candidate = None
+
+    if candidate:
+        print("Testing JVM:", candidate)
+        ok, message = _test_jvm(candidate)
+
+        if ok:
+            print(message)
+            return candidate
+
+        print("Existing JVM failed:", message)
+
+    print("Installing a compatible JDK 17...")
+
+    import jdk
+    java_home = str(jdk.install("17"))
+    candidate = _find_jvm(java_home)
+
+    print("Testing downloaded JVM:", candidate)
+    ok, message = _test_jvm(candidate)
+
+    if not ok:
+        raise RuntimeError(
+            "Downloaded JVM also failed:\n" + message
+        )
+
+    print(message)
+    return candidate
 
 def init(url="", jdwpPort=-1):
     """Start up JVM, import JAR at URL.
@@ -60,8 +185,8 @@ def javaaddpath(url="", jdwpPort=-1):
       com= jpype.JPackage('com')
     can be used to the com package into the Python namespace.
     Example:
-      javaaddpath('http://autoplot.org/devel/autoplot.jar')
-    if no url is provided, then the default http://autoplot.org/latest/autoplot.jar is used.
+      javaaddpath('https://autoplot.org/devel/autoplot.jar')
+    if no url is provided, then the default https://autoplot.org/latest/autoplot.jar is used.
     """
 
     import os
@@ -78,7 +203,7 @@ def javaaddpath(url="", jdwpPort=-1):
         from urllib2 import urlopen
 
     if url == "":
-        url = "http://autoplot.org/latest/autoplot.jar"
+        url = "https://autoplot.org/latest/autoplot.jar"
 
     file_name = url.split("/")[-1]
     u = urlopen(url)
@@ -123,21 +248,24 @@ def javaaddpath(url="", jdwpPort=-1):
         f.close()
 
     if not jpype.isJVMStarted():
-        if jdwpPort > -1:
-            print("Java is waiting for debugger at port %d" % jdwpPort)
-            jpype.startJVM(
-                jpype.getDefaultJVMPath(),
-                "-Djava.class.path=" + cacheFile,
-                "-Xdebug",
-                "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=%d"
-                % jdwpPort,
-            )
 
-        else:
-            print("Java is starting")
-            jpype.startJVM(
-                jpype.getDefaultJVMPath(), "-Djava.class.path=" + cacheFile
-            )
+        jvm_path = _get_working_jvm()
+
+        args = ["-Djava.class.path=" + cacheFile]
+
+        if jdwpPort > -1:
+            print("Java is waiting for debugger at port %d"
+                  % jdwpPort)
+
+            args.extend([
+                "-Xdebug",
+                "-Xrunjdwp:transport=dt_socket,"
+                "server=y,suspend=y,address=%d" % jdwpPort
+            ])
+
+        print("Starting JVM:", jvm_path)
+        jpype.startJVM(jvm_path, *args)
+
     else:
         print("Java is already running.")
 
