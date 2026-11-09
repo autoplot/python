@@ -10,4 +10,4 @@ from autoplot.autoplot import to_ndarray
 from autoplot.autoplot import show_completions
 from autoplot.autoplot import getDataSet
 from autoplot.autoplot import formatDataSet
-__version__='0.9.2'
+__version__='0.9.4'

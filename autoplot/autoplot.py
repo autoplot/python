@@ -17,8 +17,9 @@ def init(url="", jdwpPort=-1):
       javaaddpath('http://autoplot.org/devel/autoplot.jar')
     if no url is provided, then the default http://autoplot.org/latest/autoplot.jar is used.
     """
-    javaaddpath(url="", jdwpPort=jdwpPort)
-
+    import jpype
+    if not jpype.isJVMStarted():
+        javaaddpath(url="", jdwpPort=jdwpPort)
 
 def handleShutdown():
     "shutdown hook which shuts down the JVM."
@@ -191,21 +192,15 @@ def to_qdataset(X, Y=None, Z=None):
 
     if not X is None and isinstance(X, jpype.JObject):
         if X.getClass().getTypeName() == "org.autoplot.idlsupport.APDataSet":
-            if X.depend(1) != "":
-                Z = X.values()
-                Y = X.values(X.depend(1))
-                X = X.values(X.depend(0))
-            if X.depend(0) != "":
-                Y = X.values()
-                X = X.values(X.depend(0))
+            X= X.getQDataSet()
 
     if not Y is None and isinstance(Y, jpype.JObject):
         if Y.getClass().getTypeName() == "org.autoplot.idlsupport.APDataSet":
-            Y = Y.values()
+            Y = Y.getQDataSet()
 
     if not Z is None and isinstance(Z, jpype.JObject):
         if Z.getClass().getTypeName() == "org.autoplot.idlsupport.APDataSet":
-            Z = Z.values()
+            Z = Z.getQDataSet()
 
     if Y is None and Z is None:
         if isinstance(X, jpype.JObject):
@@ -245,6 +240,7 @@ def to_qdataset(X, Y=None, Z=None):
 
 
 def getDataSet(uri, monitor=None):
+    init()
     apds = APDataSet()
     apds.setDataSetURI(uri)
     apds.doGetDataSet(monitor=monitor)
@@ -253,8 +249,18 @@ def getDataSet(uri, monitor=None):
 
 def formatDataSet(ds, path):
     import jpype
-
+    
+    if not isinstance(path, jpype.JObject):
+        print('autoconvert to string!')
+        java_string_class = jpype.JClass("java.lang.String")
+        path= java_string_class(path)
+    print(ds,'before')
+    print(type(ds))
     ds = to_qdataset(ds)
+    print(ds,'after')
+    print(type(ds))
+    if not isinstance(path, jpype.JObject):
+        print ('not a qdataset...')
     sc = jpype.JClass("org.autoplot.ScriptContext")
     sc.formatDataSet(ds, path)
 
